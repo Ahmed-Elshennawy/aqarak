@@ -1,4 +1,5 @@
 // lib/core/theme/app_fonts.dart
+import 'package:aqarak/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class AppFonts {
@@ -29,55 +30,38 @@ class AppFonts {
     fontSize: appName,
     fontWeight: medium,
     height: 1.2,
-    color: Colors.cyanAccent,
+    color: AppColors.splashColorElements,
   );
 
-  static TextStyle get headline1 => TextStyle(
-    fontFamily: fontFamily,
-    fontSize: h1,
-    fontWeight: bold,
-    height: 1.2,
-  );
-
-  static TextStyle get headline2 => TextStyle(
+  static TextStyle get titlePageName => TextStyle(
     fontFamily: fontFamily,
     fontSize: h2,
-    fontWeight: semiBold,
-    height: 1.3,
-  );
-
-  static TextStyle get headline3 => TextStyle(
-    fontFamily: fontFamily,
-    fontSize: h3,
     fontWeight: medium,
-    height: 1.3,
+    height: 1.2,
+    color: AppColors.textDark,
   );
 
-  static TextStyle get bodyLg => TextStyle(
-    fontFamily: fontFamily,
-    fontSize: bodyLarge,
-    fontWeight: regular,
-    height: 1.5,
-  );
-
-  static TextStyle get bodyMd => TextStyle(
-    fontFamily: fontFamily,
-    fontSize: bodyMedium,
-    fontWeight: regular,
-    height: 1.5,
-  );
-
-  static TextStyle get bodySm => TextStyle(
+  static TextStyle get noteStyle => TextStyle(
     fontFamily: fontFamily,
     fontSize: bodySmall,
     fontWeight: regular,
-    height: 1.5,
+    height: 1.2,
+    color: AppColors.noteColor,
   );
 
-  static TextStyle get captionText => TextStyle(
+  static TextStyle get bodyLargeStyle => TextStyle(
     fontFamily: fontFamily,
-    fontSize: caption,
-    fontWeight: light,
-    height: 1.5,
+    fontSize: bodyMedium,
+    fontWeight: regular,
+    height: 1.2,
+    color: AppColors.textDark,
+  );
+
+  static TextStyle get bodyLargeForgotStyle => TextStyle(
+    fontFamily: fontFamily,
+    fontSize: bodyLarge,
+    fontWeight: regular,
+    height: 1.2,
+    color: AppColors.accentBlue,
   );
 }

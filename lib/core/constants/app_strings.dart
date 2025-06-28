@@ -20,9 +20,12 @@ class AppStrings {
   static const String changeNumber = 'Change number';
   static const String dontHaveAccount = "Don't have an account? Sign Up";
   static const String haveAccount = 'Already have an account? Sign In';
-  static const String terms =
-      'By creating an account, you are agree to our Terms';
+  static const String creatingAccountNote =
+      'By creating an account, you are agree to our ';
+  static const String terms = 'Terms';
   static const String recoverEmail =
       'Please enter your registered email address to recover your password';
   static const String orSignInUsing = 'or sign in using';
+  static const String facebook = 'Facebook';
+  static const String google = 'Google';
 }

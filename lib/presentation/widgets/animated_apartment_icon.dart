@@ -1,8 +1,10 @@
+import 'package:aqarak/core/constants/app_colors.dart';
+import 'package:aqarak/core/constants/app_images.dart';
 import 'package:aqarak/core/constants/app_sizes.dart';
 import 'package:aqarak/presentation/cubits/splash/splash_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class AnimatedApartmentIcon extends StatefulWidget {
   const AnimatedApartmentIcon({super.key});
@@ -71,10 +73,10 @@ class _AnimatedApartmentIconState extends State<AnimatedApartmentIcon>
       builder: (context, child) {
         return Transform.translate(
           offset: Offset(0, _jumpAnimation.value),
-          child: Icon(
-            FontAwesomeIcons.buildingUser,
-            size: AppSizes.splashIconSize,
-            color: Colors.cyanAccent,
+          child: SvgPicture.asset(
+            AppImages.appLogo,
+            height: AppSizes.splashIconSize,
+            color: AppColors.splashColorElements,
           ),
         );
       },

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "811605395179",
+    "project_id": "aqarakapp-8685a",
+    "storage_bucket": "aqarakapp-8685a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:811605395179:android:2b3685540032cc2749e0ae",
+        "android_client_info": {
+          "package_name": "com.example.aqarak"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqBTG-3s1gak9i7Cd_y5d7sLbVhMJl9Sk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -16,7 +16,7 @@ class SplashPage extends StatelessWidget {
     return BlocConsumer<SplashCubit, SplashState>(
       listener: (context, state) {
         if (state is PlashComplete) {
-          GoRouter.of(context).go(AppRouter.myHomePage);
+          GoRouter.of(context).go(AppRouter.signUpPage);
           // context.go(AppRouter.myHomePage);
         }
       },

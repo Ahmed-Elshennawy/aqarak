@@ -4,6 +4,6 @@ class AppSizes {
   static const double borderRadius = 12.0;
   static const double buttonHeight = 50.0;
   static const double iconSize = 24.0;
-  static const double splashIconSize = 200;
+  static const double splashIconSize = 240;
   static const double textFieldHeight = 50.0;
 }

@@ -27,4 +27,11 @@ final class SplashAppNameAnimated extends SplashState {
   List<Object> get props => [isAppNameAnimated];
 }
 
-final class PlashComplete extends SplashState {}
+final class SplashComplete extends SplashState {
+  final bool isLoggedIn;
+
+  const SplashComplete({required this.isLoggedIn});
+
+  @override
+  List<Object> get props => [isLoggedIn];
+}

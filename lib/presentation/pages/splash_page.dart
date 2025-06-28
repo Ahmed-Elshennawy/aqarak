@@ -15,9 +15,12 @@ class SplashPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<SplashCubit, SplashState>(
       listener: (context, state) {
-        if (state is PlashComplete) {
-          GoRouter.of(context).go(AppRouter.signUpPage);
-          // context.go(AppRouter.myHomePage);
+        if (state is SplashComplete) {
+          if (state.isLoggedIn) {
+            GoRouter.of(context).go(AppRouter.myHomePage);
+          } else {
+            GoRouter.of(context).go(AppRouter.signUpPage);
+          }
         }
       },
       builder: (context, state) {
@@ -28,8 +31,6 @@ class SplashPage extends StatelessWidget {
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [AppColors.primaryGreen, AppColors.primaryBlue],
-                // begin: Alignment.topLeft,
-                // end: Alignment.bottomRight,
               ),
             ),
             child: Column(

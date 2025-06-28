@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:aqarak/app_router.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -33,7 +34,15 @@ class AuthCubit extends Cubit<AuthState> {
   ) async {
     emit(AuthLoading());
     final result = await signUp(email, password, fullName, mobileNumber);
-    result.fold((failure) => emit(AuthFailure(failure.toString())), (user) {
+    result.fold((failure) => emit(AuthFailure(failure.toString())), (
+      user,
+    ) async {
+      await FirebaseFirestore.instance.collection('users').doc(user.id).set({
+        'uid': user.id,
+        'email': user.email,
+        'fullName': user.fullName,
+        'mobileNumber': user.mobileNumber,
+      });
       emit(AuthSuccess(user.toString()));
       router.go(AppRouter.verifyAccountPage);
     });

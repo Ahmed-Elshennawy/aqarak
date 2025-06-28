@@ -65,7 +65,7 @@ abstract class AppRouter {
         pageBuilder: (context, state) => buildPageWithBottomToTopTransition(
           context: context,
           state: state,
-          child: const MyHomePage(),
+          child: const HomePage(),
         ),
       ),
     ],

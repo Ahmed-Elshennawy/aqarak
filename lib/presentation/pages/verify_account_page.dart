@@ -60,11 +60,6 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
       height: 60,
       textStyle: const TextStyle(fontSize: 20, color: AppColors.primaryBlue),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.primaryGreen, AppColors.primaryBlue],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
         borderRadius: BorderRadius.circular(AppSizes.borderRadius),
         border: Border.all(color: AppColors.accentBlue),
       ),

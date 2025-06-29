@@ -1,5 +1,5 @@
 import 'package:aqarak/core/constants/app_sizes.dart';
-import 'package:aqarak/presentation/cubits/custom_app_bar.dart/custom_app_bar_cubit.dart';
+import 'package:aqarak/presentation/cubits/find_room/custom_app_bar_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

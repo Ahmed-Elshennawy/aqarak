@@ -12,7 +12,7 @@ final class FindRoomInitial extends FindRoomState {}
 final class FindRoomLoading extends FindRoomState {}
 
 final class FindRoomLoaded extends FindRoomState {
-  final List<Map<String, dynamic>> rooms;
+  final List<RoomEntity> rooms;
 
   const FindRoomLoaded(this.rooms);
 }

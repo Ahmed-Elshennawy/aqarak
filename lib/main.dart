@@ -1,6 +1,7 @@
 // lib/main.dart
 import 'package:aqarak/app_router.dart';
 import 'package:aqarak/core/constants/app_strings.dart';
+import 'package:aqarak/core/constants/app_themes.dart';
 import 'package:aqarak/domain/usecases/reset_password.dart';
 import 'package:aqarak/domain/usecases/sign_in.dart';
 import 'package:aqarak/domain/usecases/sign_up.dart';
@@ -11,7 +12,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../data/datasources/auth_remote_datasource.dart';
-import '../data/repositories/auth_repository_impl.dart';  
+import '../data/repositories/auth_repository_impl.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +49,9 @@ class Aqarak extends StatelessWidget {
       child: MaterialApp.router(
         title: AppStrings.appName,
         routerConfig: AppRouter.router,
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: ThemeMode.system,
         debugShowCheckedModeBanner: false,
       ),
     );

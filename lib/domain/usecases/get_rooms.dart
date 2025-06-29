@@ -5,7 +5,17 @@ class GetRooms {
   final RoomRepository repository;
   GetRooms(this.repository);
 
-  Future<List<RoomEntity>> call(String userId) async {
-    return await repository.getRooms(userId);
+  Future<List<RoomEntity>> call({
+    required String userId,
+    String? type,
+    String? location,
+    bool? airConditioned,
+  }) async {
+    return await repository.getRooms(
+      userId: userId,
+      type: type,
+      location: location,
+      airConditioned: airConditioned,
+    );
   }
 }

@@ -51,7 +51,7 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
           backgroundColor: Colors.transparent,
           onTap: _onItemTapped,
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.house), label: 'Rooms'),
+            BottomNavigationBarItem(icon: Icon(Icons.apartment_rounded), label: 'Rooms'),
             BottomNavigationBarItem(
               icon: Icon(Icons.directions_car),
               label: 'Car Booking',

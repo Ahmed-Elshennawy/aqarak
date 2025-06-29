@@ -2,6 +2,7 @@ import 'package:aqarak/core/constants/app_sizes.dart';
 import 'package:aqarak/presentation/cubits/find_room/property_type_cubit.dart';
 import 'package:aqarak/presentation/widgets/custom_app_bar.dart';
 import 'package:aqarak/presentation/widgets/custom_toggles.dart';
+import 'package:aqarak/presentation/widgets/location_search_feild.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -24,6 +25,9 @@ class FindRoomScreen extends StatelessWidget {
                   create: (context) => PropertyTypeCubit(),
                   child: CustomToggles(),
                 ),
+                SizedBox(height: AppSizes.padding),
+                // SELECT PLACE TEXT FEILD.
+                LocationSearchField(),
               ],
             ),
           ),

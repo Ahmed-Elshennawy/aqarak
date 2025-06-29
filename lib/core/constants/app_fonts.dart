@@ -54,7 +54,6 @@ class AppFonts {
     fontSize: bodyMedium,
     fontWeight: regular,
     height: 1.2,
-    color: AppColors.textDark,
   );
 
   static TextStyle get bodyLargeForgotStyle => TextStyle(

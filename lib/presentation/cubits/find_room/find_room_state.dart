@@ -9,6 +9,7 @@ sealed class FindRoomState extends Equatable {
 
 final class FindRoomInitial extends FindRoomState {}
 
+
 final class FindRoomLoading extends FindRoomState {}
 
 final class FindRoomLoaded extends FindRoomState {

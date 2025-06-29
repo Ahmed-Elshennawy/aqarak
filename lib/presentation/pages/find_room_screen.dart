@@ -2,6 +2,7 @@ import 'package:aqarak/core/constants/app_sizes.dart';
 import 'package:aqarak/presentation/cubits/find_room/property_type_cubit.dart';
 import 'package:aqarak/presentation/widgets/custom_app_bar.dart';
 import 'package:aqarak/presentation/widgets/custom_toggles.dart';
+import 'package:aqarak/presentation/widgets/guest_selector.dart';
 import 'package:aqarak/presentation/widgets/location_search_feild.dart';
 import 'package:aqarak/presentation/widgets/stay_dates_selector.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +33,8 @@ class FindRoomScreen extends StatelessWidget {
                 SizedBox(height: AppSizes.padding),
                 // SELECT DATES FOR STAY
                 StayDatesSelector(),
-
                 // SELECT PEOPLE COUNT AND ROOMS COUNT
+                GuestsSelector(),
               ],
             ),
           ),

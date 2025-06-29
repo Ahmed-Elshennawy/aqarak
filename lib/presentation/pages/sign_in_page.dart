@@ -41,7 +41,7 @@ class _SignInPageState extends State<SignInPage> {
         listener: (context, state) {
           if (state is AuthSuccess) {
             CustomSnackBar.show(context, 'Sign In successful!');
-            GoRouter.of(context).go(AppRouter.myHomePage);
+            GoRouter.of(context).go(AppRouter.navigationBarPage);
           } else if (state is AuthFailure) {
             CustomSnackBar.show(context, _parseFirebaseError(state.message));
           }

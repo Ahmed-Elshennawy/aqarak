@@ -1,11 +1,11 @@
 // lib/app_router.dart
 import 'package:aqarak/presentation/pages/forgot_password_page.dart';
+import 'package:aqarak/presentation/pages/navigation_bar_page.dart';
 import 'package:aqarak/presentation/pages/sign_in_page.dart';
 import 'package:aqarak/presentation/pages/sign_up_page.dart';
 import 'package:aqarak/presentation/pages/verify_account_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'presentation/pages/home_page.dart';
 import 'presentation/pages/splash_page.dart';
 
 abstract class AppRouter {
@@ -14,7 +14,7 @@ abstract class AppRouter {
   static const signUpPage = '/signUpPage';
   static const verifyAccountPage = '/verifyAccountPage';
   static const forgotPasswordPage = '/forgotPasswordPage';
-  static const myHomePage = '/myHomePage';
+  static const navigationBarPage = '/navigationBarPage';
 
   /// Configures the app's navigation routes using GoRouter.
   static final GoRouter router = GoRouter(
@@ -61,11 +61,11 @@ abstract class AppRouter {
         ),
       ),
       GoRoute(
-        path: myHomePage,
+        path: navigationBarPage,
         pageBuilder: (context, state) => buildPageWithBottomToTopTransition(
           context: context,
           state: state,
-          child: const HomePage(),
+          child: const NavigationBarPage(),
         ),
       ),
     ],

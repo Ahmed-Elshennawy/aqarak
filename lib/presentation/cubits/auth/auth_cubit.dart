@@ -53,7 +53,7 @@ class AuthCubit extends Cubit<AuthState> {
     final result = await signIn(email, password);
     result.fold((failure) => emit(AuthFailure(failure.toString())), (user) {
       emit(AuthSuccess(user.toString()));
-      router.go(AppRouter.myHomePage);
+      router.go(AppRouter.navigationBarPage);
     });
   }
 

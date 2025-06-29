@@ -17,7 +17,7 @@ class SplashPage extends StatelessWidget {
       listener: (context, state) {
         if (state is SplashComplete) {
           if (state.isLoggedIn) {
-            GoRouter.of(context).go(AppRouter.myHomePage);
+            GoRouter.of(context).go(AppRouter.navigationBarPage);
           } else {
             GoRouter.of(context).go(AppRouter.signUpPage);
           }

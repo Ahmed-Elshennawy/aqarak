@@ -13,4 +13,5 @@ class AppColors {
   static const Color forgotPassColor = Color(0xFFFF4900);
   static const Color splashColorElements = Colors.cyanAccent;
   static const Color noteColor = Color(0xFF8E929B);
+  static const Color unselectedItemColor = Color.fromRGBO(0, 0, 61, 0.5);
 }

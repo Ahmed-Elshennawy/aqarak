@@ -1,4 +1,10 @@
+import 'package:aqarak/core/constants/app_colors.dart';
+import 'package:aqarak/core/constants/app_fonts.dart';
+import 'package:aqarak/presentation/pages/book_car_screen.dart';
+import 'package:aqarak/presentation/pages/car_washing_screen.dart';
 import 'package:aqarak/presentation/pages/find_room_screen.dart';
+import 'package:aqarak/presentation/pages/my_profile_screen.dart';
+import 'package:aqarak/presentation/pages/settings_screen.dart';
 import 'package:flutter/material.dart';
 
 class NavigationBarPage extends StatefulWidget {
@@ -13,21 +19,10 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
 
   final List<Widget> _screens = [
     const FindRoomScreen(),
-    const FindRoomScreen(),
-    const FindRoomScreen(),
-    const FindRoomScreen(),
-    // const BookCarScreen(),
-    // const CarWashingScreen(),
-    // const MyProfileScreen(),
-    // const SettingsScreen(),
-  ];
-
-  final List<String> _titles = [
-    'Find Room',
-    'Book a Car',
-    'Car Washing',
-    'My Profile',
-    'Settings',
+    const BookCarScreen(),
+    const CarWashingScreen(),
+    const MyProfileScreen(),
+    const SettingsScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -39,30 +34,42 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_titles[_selectedIndex])),
       body: _screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.room), label: 'Rooms'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.directions_car),
-            label: 'Car Booking',
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [AppColors.primaryBlue, AppColors.primaryGreen],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.local_car_wash),
-            label: 'Car Washing',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'My Profile',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          selectedItemColor: AppColors.textDark,
+          unselectedItemColor: AppColors.unselectedItemColor,
+          showUnselectedLabels: false,
+          selectedLabelStyle: AppFonts.captionRegularStyle,
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.transparent,
+          onTap: _onItemTapped,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.house), label: 'Rooms'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.directions_car),
+              label: 'Car Booking',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.local_car_wash),
+              label: 'Car Washing',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'My Profile',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Settings',
+            ),
+          ],
+        ),
       ),
     );
   }

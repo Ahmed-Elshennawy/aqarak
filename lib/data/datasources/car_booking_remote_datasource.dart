@@ -6,7 +6,7 @@ class CarBookingRemoteDataSource {
 
   Future<List<CarBookingEntity>> getCarBookings(String userId) async {
     final snapshot = await _firestore
-        .collection('carBooking')
+        .collection('car_bookings')
         .where('userId', isEqualTo: userId)
         .get();
     return snapshot.docs

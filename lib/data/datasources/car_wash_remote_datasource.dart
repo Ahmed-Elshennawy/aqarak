@@ -6,7 +6,7 @@ class CarWashRemoteDataSource {
 
   Future<List<CarWashLocationEntity>> getCarWashLocations(String userId) async {
     final snapshot = await _firestore
-        .collection('carWashLocation')
+        .collection('car_washing_locations')
         .where('userId', isEqualTo: userId)
         .get();
     return snapshot.docs

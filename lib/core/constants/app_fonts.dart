@@ -64,4 +64,12 @@ class AppFonts {
     height: 1.2,
     color: AppColors.accentBlue,
   );
+
+  static TextStyle get captionRegularStyle => TextStyle(
+    fontFamily: fontFamily,
+    fontSize: caption,
+    fontWeight: regular,
+    height: 1.2,
+    color: AppColors.textDark,
+  );
 }

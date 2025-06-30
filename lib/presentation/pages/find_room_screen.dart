@@ -1,3 +1,4 @@
+import 'package:aqarak/core/constants/app_colors.dart';
 import 'package:aqarak/core/constants/app_images.dart';
 import 'package:aqarak/core/constants/app_sizes.dart';
 import 'package:aqarak/presentation/cubits/find_room/property_type_cubit.dart';
@@ -23,7 +24,7 @@ class FindRoomScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(AppSizes.padding),
+            padding: const EdgeInsets.all(20),
             child: Column(
               children: [
                 // CUSTOM TOGGLE TYPE TABS
@@ -43,6 +44,7 @@ class FindRoomScreen extends StatelessWidget {
                 RoomTypeSelector(),
                 // THE SEARCH BUTTON
                 CustomButton(onPressed: () {}, text: 'Search'),
+                SizedBox(height: 10),
                 // PLACES CLOSE TO YOUR LOCATION
                 HorizontalCardList(
                   sectionTitle: 'Explore Nearby',
@@ -53,14 +55,19 @@ class FindRoomScreen extends StatelessWidget {
                     {'imageUrl': AppImages.homeTest1, 'title': 'Lagos'},
                   ],
                 ),
+                Divider(
+                  color: AppColors.findRoomDividerColor,
+                  height: 2,
+                  thickness: 3,
+                ),
                 // BEST PLACES
                 HorizontalCardList(
                   sectionTitle: 'Best Places',
                   items: [
-                    {'imageUrl': AppImages.homeTest, 'title': 'Ivory Coast'},
-                    {'imageUrl': AppImages.homeTest, 'title': 'Senegal'},
-                    {'imageUrl': AppImages.homeTest, 'title': 'Ville'},
-                    {'imageUrl': AppImages.homeTest, 'title': 'Lagos'},
+                    {'imageUrl': AppImages.homeTest, 'title': 'Heden golf'},
+                    {'imageUrl': AppImages.homeTest, 'title': 'Onomo'},
+                    {'imageUrl': AppImages.homeTest, 'title': 'Adagio'},
+                    {'imageUrl': AppImages.homeTest, 'title': 'Sofiltel'},
                   ],
                 ),
               ],

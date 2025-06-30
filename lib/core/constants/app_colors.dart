@@ -15,4 +15,5 @@ class AppColors {
   static const Color noteColor = Color(0xFF8E929B);
   static const Color unselectedItemColor = Color.fromRGBO(0, 0, 61, 0.5);
   static const Color activeTabColoreColor = Color(0xFF0090FF);
+  static const Color findRoomDividerColor = Color(0xFFEBF1F5);
 }

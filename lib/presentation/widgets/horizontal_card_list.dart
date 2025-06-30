@@ -56,9 +56,12 @@ class _SectionHeader extends StatelessWidget {
             context,
           ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w400),
         ),
-        TextButton(
-          onPressed: onViewAll,
-          child: const Text('VIEW ALL', style: TextStyle(fontSize: 12)),
+        SizedBox(
+          height: 30,
+          child: TextButton(
+            onPressed: onViewAll,
+            child: const Text('VIEW ALL', style: TextStyle(fontSize: 12)),
+          ),
         ),
       ],
     );
@@ -82,7 +85,7 @@ class PlaceCard extends StatelessWidget {
     return SizedBox(
       width: width,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
@@ -93,7 +96,9 @@ class PlaceCard extends StatelessWidget {
             title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.bodySmall,
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
           ),
         ],
       ),

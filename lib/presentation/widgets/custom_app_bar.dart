@@ -1,3 +1,4 @@
+import 'package:aqarak/core/constants/app_colors.dart';
 import 'package:aqarak/core/constants/app_sizes.dart';
 import 'package:aqarak/presentation/cubits/find_room/custom_app_bar_cubit.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                         Text(
                           'Stay',
                           style: TextStyle(
-                            color: isStaySelected ? Colors.black : Colors.grey,
+                            color: isStaySelected
+                                ? AppColors.activeTabColoreColor
+                                : Colors.grey,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -40,7 +43,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                         Text(
                           'Pass',
                           style: TextStyle(
-                            color: !isStaySelected ? Colors.black : Colors.grey,
+                            color: !isStaySelected
+                                ? AppColors.activeTabColoreColor
+                                : Colors.grey,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

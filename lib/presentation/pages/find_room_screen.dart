@@ -1,9 +1,11 @@
 import 'package:aqarak/core/constants/app_sizes.dart';
 import 'package:aqarak/presentation/cubits/find_room/property_type_cubit.dart';
 import 'package:aqarak/presentation/widgets/custom_app_bar.dart';
+import 'package:aqarak/presentation/widgets/custom_main_button.dart';
 import 'package:aqarak/presentation/widgets/custom_toggles.dart';
 import 'package:aqarak/presentation/widgets/guest_selector.dart';
 import 'package:aqarak/presentation/widgets/location_search_feild.dart';
+import 'package:aqarak/presentation/widgets/room_type_selector.dart';
 import 'package:aqarak/presentation/widgets/stay_dates_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,6 +37,10 @@ class FindRoomScreen extends StatelessWidget {
                 StayDatesSelector(),
                 // SELECT PEOPLE COUNT AND ROOMS COUNT
                 GuestsSelector(),
+                // SELECT IF FAN OR AIR CONDITIONED
+                RoomTypeSelector(),
+                // THE SEARCH BUTTON
+                CustomButton(onPressed: () {}, text: 'Search'),
               ],
             ),
           ),

@@ -1,3 +1,4 @@
+import 'package:aqarak/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -240,22 +241,30 @@ class _LocationSearchFieldState extends State<LocationSearchField> {
       );
     }
 
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: _suggestions.length,
-      itemBuilder: (context, index) {
-        final suggestion = _suggestions[index];
-        return ListTile(
-          leading: const Icon(Icons.location_on_outlined, color: Colors.blue),
-          title: Text(suggestion.description),
-          onTap: () {
-            _controller.text = suggestion.description;
-            _focusNode.unfocus();
-            _removeOverlay();
-            widget.onLocationSelected?.call(suggestion.description);
-          },
-        );
-      },
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: Theme.of(context).brightness == Brightness.dark
+            ? AppColors.backgroundDark
+            : AppColors.backgroundLight,
+      ),
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: _suggestions.length,
+        itemBuilder: (context, index) {
+          final suggestion = _suggestions[index];
+          return ListTile(
+            leading: const Icon(Icons.location_on_outlined, color: Colors.blue),
+            title: Text(suggestion.description),
+            onTap: () {
+              _controller.text = suggestion.description;
+              _focusNode.unfocus();
+              _removeOverlay();
+              widget.onLocationSelected?.call(suggestion.description);
+            },
+          );
+        },
+      ),
     );
   }
 

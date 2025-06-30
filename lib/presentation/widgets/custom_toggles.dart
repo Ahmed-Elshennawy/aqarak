@@ -35,13 +35,13 @@ class CustomToggles extends StatelessWidget {
                     minWidth: toggleWidth,
                     minHeight: 42,
                   ),
-                  color: Colors.black,
+                  color: AppColors.activeTabColoreColor,
                   selectedColor: Colors.white,
                   fillColor: AppColors.activeTabColoreColor,
                   borderRadius: BorderRadius.circular(20),
                   borderColor: AppColors.activeTabColoreColor,
                   borderWidth: 2,
-                  selectedBorderColor:AppColors.activeTabColoreColor,
+                  selectedBorderColor: AppColors.activeTabColoreColor,
                   children: const [
                     Padding(
                       padding: EdgeInsets.all(8.0),

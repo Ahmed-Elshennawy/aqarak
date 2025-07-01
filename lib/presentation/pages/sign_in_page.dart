@@ -66,7 +66,6 @@ class _SignInPageState extends State<SignInPage> {
                   Text(AppStrings.signIn, style: AppFonts.titlePageName),
                   const SizedBox(height: AppSizes.padding),
                   Card(
-                    color: AppColors.textDark,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(35),
                     ),
@@ -192,5 +191,4 @@ class _SignInPageState extends State<SignInPage> {
 
     return 'An unexpected error occurred. Please try again.';
   }
-
 }

@@ -70,7 +70,6 @@ class _SignUpPageState extends State<SignUpPage> {
                   Text(AppStrings.signUpTitle, style: AppFonts.titlePageName),
                   const SizedBox(height: AppSizes.padding),
                   Card(
-                    color: AppColors.textDark,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(35),
                     ),

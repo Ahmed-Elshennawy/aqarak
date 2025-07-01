@@ -7,15 +7,19 @@ import 'dart:async';
 
 class LocationSearchField extends StatefulWidget {
   final Function(String)? onLocationSelected;
+
   const LocationSearchField({super.key, this.onLocationSelected});
+
   @override
-  State<LocationSearchField> createState() => _LocationSearchFieldState();
+  LocationSearchFieldState createState() => LocationSearchFieldState();
 }
 
-class _LocationSearchFieldState extends State<LocationSearchField> {
-  final _controller = TextEditingController(), _focusNode = FocusNode();
+class LocationSearchFieldState extends State<LocationSearchField> {
+  final TextEditingController controller = TextEditingController();
+  final _focusNode = FocusNode();
   final _layerLink = LayerLink();
-  var _suggestions = <PlaceSuggestion>[], _isLoading = false;
+  var _suggestions = <PlaceSuggestion>[];
+  var _isLoading = false;
   Timer? _debounce;
   OverlayEntry? _overlayEntry;
 
@@ -27,7 +31,7 @@ class _LocationSearchFieldState extends State<LocationSearchField> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    controller.dispose();
     _focusNode.dispose();
     _debounce?.cancel();
     _removeOverlay();
@@ -36,7 +40,7 @@ class _LocationSearchFieldState extends State<LocationSearchField> {
 
   void _onFocusChange() {
     if (_focusNode.hasFocus) {
-      if (_controller.text.isEmpty) _loadPopularEgyptianCities();
+      if (controller.text.isEmpty) _loadPopularEgyptianCities();
       _showOverlay();
     } else {
       _removeOverlay();
@@ -140,6 +144,7 @@ class _LocationSearchFieldState extends State<LocationSearchField> {
   }
 
   void _updateOverlay() => _overlayEntry?.markNeedsBuild();
+
   void _removeOverlay() {
     _overlayEntry?.remove();
     _overlayEntry = null;
@@ -172,7 +177,7 @@ class _LocationSearchFieldState extends State<LocationSearchField> {
           leading: const Icon(Icons.location_on_outlined, color: Colors.blue),
           title: Text(_suggestions[index].description),
           onTap: () {
-            _controller.text = _suggestions[index].description;
+            controller.text = _suggestions[index].description;
             _focusNode.unfocus();
             _removeOverlay();
             widget.onLocationSelected?.call(_suggestions[index].description);
@@ -186,7 +191,7 @@ class _LocationSearchFieldState extends State<LocationSearchField> {
   Widget build(BuildContext context) => CompositedTransformTarget(
     link: _layerLink,
     child: TextFormField(
-      controller: _controller,
+      controller: controller,
       focusNode: _focusNode,
       onChanged: _onTextChanged,
       decoration: const InputDecoration(
@@ -200,25 +205,8 @@ class _LocationSearchFieldState extends State<LocationSearchField> {
 }
 
 class PlaceSuggestion {
-  final String description, placeId;
-  PlaceSuggestion({required this.description, required this.placeId});
-}
+  final String description;
+  final String placeId;
 
-class LocationSearchExample extends StatelessWidget {
-  const LocationSearchExample({super.key});
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Location Search')),
-    body: Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          LocationSearchField(
-            // onLocationSelected: (location) =>
-            // print('Selected location: $location'),
-          ),
-        ],
-      ),
-    ),
-  );
+  PlaceSuggestion({required this.description, required this.placeId});
 }

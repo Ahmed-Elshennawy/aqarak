@@ -1,11 +1,10 @@
-import 'package:aqarak/core/constants/app_colors.dart';
 import 'package:aqarak/core/constants/app_sizes.dart';
-import 'package:aqarak/presentation/cubits/find_room/custom_app_bar_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({super.key});
+  final VoidCallback? onAddPlcasePressed;
+
+  const CustomAppBar({super.key, this.onAddPlcasePressed});
 
   @override
   Widget build(BuildContext context) {
@@ -17,47 +16,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.all(AppSizes.padding),
           child: Row(
             children: [
-              // STAY PASS SWITCHER
-              BlocProvider(
-                create: (context) => CustomAppBarCubit(),
-                child: BlocBuilder<CustomAppBarCubit, bool>(
-                  builder: (context, isStaySelected) {
-                    return Row(
-                      children: [
-                        Text(
-                          'Stay',
-                          style: TextStyle(
-                            color: isStaySelected
-                                ? AppColors.activeTabColoreColor
-                                : Colors.grey,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Switch(
-                          value: isStaySelected,
-                          onChanged: (value) {
-                            context.read<CustomAppBarCubit>().toggleSelection(
-                              value,
-                            );
-                          },
-                        ),
-                        Text(
-                          'Pass',
-                          style: TextStyle(
-                            color: !isStaySelected
-                                ? AppColors.activeTabColoreColor
-                                : Colors.grey,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
+              IconButton(
+                icon: const Icon(Icons.add_home_outlined),
+                onPressed: onAddPlcasePressed,
               ),
-              const SizedBox(width: AppSizes.padding),
-              // FILTER ICON
-              Icon(Icons.filter_list),
             ],
           ),
         ),

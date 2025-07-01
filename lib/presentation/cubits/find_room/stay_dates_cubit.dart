@@ -4,20 +4,35 @@ import 'package:equatable/equatable.dart';
 class StayDatesCubit extends Cubit<StayDatesState> {
   StayDatesCubit() : super(StayDatesInitial());
 
-  void updateCheckIn(DateTime dateTime) {
+  void updateDates({DateTime? checkIn, DateTime? checkOut}) {
+    if (checkIn == null && checkOut == null) {
+      emit(StayDatesInitial());
+      return;
+    }
+
     if (state is StayDatesLoaded) {
-      emit((state as StayDatesLoaded).copyWith(checkIn: dateTime));
+      final currentState = state as StayDatesLoaded;
+      final newCheckIn = checkIn ?? currentState.checkIn;
+      final newCheckOut = checkOut ?? currentState.checkOut;
+
+      if (newCheckIn != null && newCheckOut != null && newCheckIn.isBefore(newCheckOut)) {
+        emit(StayDatesLoaded(checkIn: newCheckIn, checkOut: newCheckOut));
+      } else if (newCheckIn != null || newCheckOut != null) {
+        emit(StayDatesLoaded(checkIn: newCheckIn, checkOut: newCheckOut));
+      } else {
+        emit(StayDatesInitial());
+      }
     } else {
-      emit(StayDatesLoaded(checkIn: dateTime, checkOut: null));
+      if (checkIn != null && checkOut != null && checkIn.isBefore(checkOut)) {
+        emit(StayDatesLoaded(checkIn: checkIn, checkOut: checkOut));
+      } else if (checkIn != null || checkOut != null) {
+        emit(StayDatesLoaded(checkIn: checkIn, checkOut: checkOut));
+      }
     }
   }
 
-  void updateCheckOut(DateTime dateTime) {
-    if (state is StayDatesLoaded) {
-      emit((state as StayDatesLoaded).copyWith(checkOut: dateTime));
-    } else {
-      emit(StayDatesLoaded(checkIn: null, checkOut: dateTime));
-    }
+  void clearDates() {
+    emit(StayDatesInitial());
   }
 }
 

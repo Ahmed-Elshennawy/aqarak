@@ -40,7 +40,7 @@ class CustomTextField extends StatelessWidget {
           //   borderSide: BorderSide.none,
           // ),
           filled: true,
-          fillColor: Colors.white,
+          // fillColor: Colors.white,
           // contentPadding: const EdgeInsets.all(AppSizes.padding / 2),
         ),
         obscureText: obscureText,

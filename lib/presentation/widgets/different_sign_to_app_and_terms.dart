@@ -34,7 +34,12 @@ class DifferentSignToAppAndTerms extends StatelessWidget {
                     children: [
                       Icon(Icons.facebook, color: Colors.white, size: 20),
                       const SizedBox(width: 8),
-                      Text(AppStrings.facebook, style: AppFonts.bodyLargeStyle),
+                      Text(
+                        AppStrings.facebook,
+                        style: AppFonts.bodyLargeStyle.copyWith(
+                          color: AppColors.textDark,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -59,7 +64,12 @@ class DifferentSignToAppAndTerms extends StatelessWidget {
                     children: [
                       Icon(Icons.g_mobiledata, color: Colors.white, size: 30),
                       const SizedBox(width: 8),
-                      Text(AppStrings.google, style: AppFonts.bodyLargeStyle),
+                      Text(
+                        AppStrings.google,
+                        style: AppFonts.bodyLargeStyle.copyWith(
+                          color: AppColors.textDark,
+                        ),
+                      ),
                     ],
                   ),
                 ),

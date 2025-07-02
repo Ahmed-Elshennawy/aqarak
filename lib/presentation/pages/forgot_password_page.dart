@@ -1,6 +1,10 @@
+import 'dart:developer';
+
+import 'package:aqarak/app_router.dart';
 import 'package:aqarak/core/constants/app_fonts.dart';
 import 'package:aqarak/presentation/cubits/auth/auth_cubit.dart';
 import 'package:aqarak/presentation/widgets/custom_main_button.dart';
+import 'package:aqarak/presentation/widgets/custom_snack_bar.dart';
 import 'package:aqarak/presentation/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +14,6 @@ import '../../core/constants/app_sizes.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/extensions/context_extensions.dart';
 
-/// Screen for recovering a forgotten password using a registered email address.
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
 
@@ -34,14 +37,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Password reset email sent')),
+            log('Password reset email sent successfully');
+            CustomSnackBar.show(
+              context,
+              'Password reset email sent to ${_emailController.text}',
             );
-            context.go('/sign-in');
+            context.go(AppRouter.signInPage);
           } else if (state is AuthFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(_parseFirebaseError(state.message))),
-            );
+            log('Password reset failed: ${state.message}');
+            CustomSnackBar.show(context, _parseFirebaseError(state.message));
           }
         },
         builder: (context, state) {
@@ -99,17 +103,40 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             CustomButton(
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
+                                  log(
+                                    'Form validated, calling performForgotPassword with email: ${_emailController.text}',
+                                  );
                                   context
                                       .read<AuthCubit>()
                                       .performForgotPassword(
                                         _emailController.text,
                                       );
+                                } else {
+                                  log('Form validation failed');
                                 }
                               },
                               text: AppStrings.submit,
-                              isLoading: state is AuthLoading,
                             ),
-                            const SizedBox(height: 350),
+                            const SizedBox(height: 50),
+                            TextButton(
+                              onPressed: () =>
+                                  GoRouter.of(context).go(AppRouter.signInPage),
+                              child: Text.rich(
+                                TextSpan(
+                                  text: 'Back to ',
+                                  style: AppFonts.noteStyle,
+                                  children: [
+                                    TextSpan(
+                                      text: 'Sign In',
+                                      style: AppFonts.noteStyle.copyWith(
+                                        color: AppColors.accentBlue,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -125,16 +152,22 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   String _parseFirebaseError(String errorMessage) {
+    log('Parsing error: $errorMessage');
     if (errorMessage.contains('user-not-found')) {
-      return 'User not found. Please sign up.';
+      return 'No account found with this email. Please sign up first.';
     }
-    if (errorMessage.contains('wrong-password')) {
-      return 'Incorrect password. Try again.';
+    if (errorMessage.contains('invalid-email')) {
+      return 'The email address is not valid. Please check and try again.';
     }
-    if (errorMessage.contains('invalid-email')) return 'Invalid email format.';
-    if (errorMessage.contains('email-already-in-use')) {
-      return 'Email already in use.';
+    if (errorMessage.contains('too-many-requests')) {
+      return 'Too many requests. Please wait a moment before trying again.';
     }
-    return 'An error occurred. Please try again.';
+    if (errorMessage.contains('network-request-failed')) {
+      return 'Network error. Please check your internet connection.';
+    }
+    if (errorMessage.contains('operation-not-allowed')) {
+      return 'Password reset is not enabled. Please contact support.';
+    }
+    return 'An unexpected error occurred. Please try again.';
   }
 }

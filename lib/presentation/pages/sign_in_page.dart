@@ -10,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_sizes.dart';
 import '../../core/constants/app_strings.dart';
@@ -130,7 +131,9 @@ class _SignInPageState extends State<SignInPage> {
                               isLoading: state is AuthLoading,
                             ),
                             const SizedBox(height: 80),
-                            DifferentSignToAppAndTerms(),
+                            if (GoogleSignIn.instance.supportsAuthenticate())
+                              DifferentSignToAppAndTerms(),
+
                             const SizedBox(height: AppSizes.padding),
                             TextButton(
                               onPressed: () =>

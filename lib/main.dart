@@ -17,6 +17,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
@@ -26,6 +27,10 @@ void main() async {
     await FirebaseAppCheck.instance.activate(
       webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
       androidProvider: AndroidProvider.playIntegrity,
+    );
+    await GoogleSignIn.instance.initialize(
+      serverClientId:
+          '204029371189-lo1llb38dmouqfska98ioiudtpqhactt.apps.googleusercontent.com',
     );
     await Hive.initFlutter();
     Hive.registerAdapter(PlaceModelAdapter());

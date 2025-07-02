@@ -27,7 +27,7 @@ android {
         applicationId = "com.example.aqarak"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = 23
+        minSdk = 24
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
@@ -47,7 +47,7 @@ flutter {
 }
 
 dependencies {
-  implementation("com.google.firebase:firebase-appcheck-playintegrity:17.0.0")
-  implementation("com.google.android.gms:play-services-base:18.1.0")
-  implementation("com.google.android.gms:play-services-safetynet:18.1.0")
+    implementation("com.google.firebase:firebase-appcheck-playintegrity:17.0.0")
+    implementation("com.google.android.gms:play-services-base:18.1.0")
+    implementation("com.google.android.gms:play-services-safetynet:18.1.0")
 }

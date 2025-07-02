@@ -12,7 +12,20 @@
           "package_name": "com.example.aqarak"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "204029371189-tg25ckd8m4sbfpmb00i6fkouetk8h1u8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.aqarak",
+            "certificate_hash": "723e57362f61bd7a6e89a6dc6429993f7003369d"
+          }
+        },
+        {
+          "client_id": "204029371189-lo1llb38dmouqfska98ioiudtpqhactt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAjxECTEHQoFGflcu-kMKpdsDSVatVtHrw"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "204029371189-lo1llb38dmouqfska98ioiudtpqhactt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

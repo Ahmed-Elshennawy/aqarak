@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:aqarak/app_router.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:aqarak/domain/usecases/reset_password.dart';
@@ -66,7 +67,10 @@ class AuthCubit extends Cubit<AuthState> {
         }
         emit(AuthSuccess(user.toString()));
         log('Navigating to navigationBarPage for user: ${user.id}');
-        router.go(AppRouter.navigationBarPage);
+
+        FirebaseAuth.instance.currentUser!.emailVerified
+            ? router.go(AppRouter.navigationBarPage)
+            : router.go(AppRouter.verifyAccountPage);
       },
     );
   }

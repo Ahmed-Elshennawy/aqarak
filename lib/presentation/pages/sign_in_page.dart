@@ -6,6 +6,7 @@ import 'package:aqarak/presentation/widgets/custom_main_button.dart';
 import 'package:aqarak/presentation/widgets/custom_snack_bar.dart';
 import 'package:aqarak/presentation/widgets/custom_text_field.dart';
 import 'package:aqarak/presentation/widgets/different_sign_to_app_and_terms.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -40,8 +41,15 @@ class _SignInPageState extends State<SignInPage> {
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
-            CustomSnackBar.show(context, 'Sign In successful!');
-            GoRouter.of(context).go(AppRouter.navigationBarPage);
+            FirebaseAuth.instance.currentUser!.emailVerified
+                ? CustomSnackBar.show(context, 'Sign In successful!')
+                : CustomSnackBar.show(
+                    context,
+                    'You need to verify your email first.',
+                  );
+            FirebaseAuth.instance.currentUser!.emailVerified
+                ? GoRouter.of(context).go(AppRouter.navigationBarPage)
+                : GoRouter.of(context).go(AppRouter.verifyAccountPage);
           } else if (state is AuthFailure) {
             CustomSnackBar.show(context, _parseFirebaseError(state.message));
           }
@@ -129,11 +137,11 @@ class _SignInPageState extends State<SignInPage> {
                                   GoRouter.of(context).go(AppRouter.signUpPage),
                               child: Text.rich(
                                 TextSpan(
-                                  text: 'Already have an account? ',
+                                  text: 'Don\'t have an account? ',
                                   style: AppFonts.noteStyle,
                                   children: [
                                     TextSpan(
-                                      text: 'Sign In',
+                                      text: 'Sign Up',
                                       style: AppFonts.noteStyle.copyWith(
                                         color: AppColors.accentBlue,
                                         fontWeight: FontWeight.bold,

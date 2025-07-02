@@ -4,7 +4,7 @@ import 'package:aqarak/core/constants/app_sizes.dart';
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final String text;
   final bool isLoading;
 

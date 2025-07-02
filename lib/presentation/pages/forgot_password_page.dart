@@ -67,7 +67,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                   const SizedBox(height: AppSizes.padding),
                   Card(
-                    color: AppColors.textDark,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(35),
                     ),

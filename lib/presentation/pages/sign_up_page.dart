@@ -7,6 +7,7 @@ import 'package:aqarak/presentation/widgets/custom_main_button.dart';
 import 'package:aqarak/presentation/widgets/custom_snack_bar.dart';
 import 'package:aqarak/presentation/widgets/custom_text_field.dart';
 import 'package:aqarak/presentation/widgets/different_sign_to_app_and_terms.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -47,7 +48,9 @@ class _SignUpPageState extends State<SignUpPage> {
           if (state is AuthSuccess) {
             log('AuthSuccess: Navigating to verifyAccountPage');
             CustomSnackBar.show(context, 'Account created successfully!');
-            GoRouter.of(context).go(AppRouter.navigationBarPage);
+            FirebaseAuth.instance.currentUser!.emailVerified
+                ? GoRouter.of(context).go(AppRouter.navigationBarPage)
+                : GoRouter.of(context).go(AppRouter.verifyAccountPage);
           } else if (state is AuthFailure) {
             log('AuthFailure: ${state.message}');
             CustomSnackBar.show(context, _parseFirebaseError(state.message));

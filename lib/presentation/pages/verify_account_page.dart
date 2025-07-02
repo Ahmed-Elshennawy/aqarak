@@ -1,16 +1,18 @@
-// lib/presentation/pages/verify_account_page.dart
-import 'dart:async';
+import 'dart:developer';
+
 import 'package:aqarak/app_router.dart';
 import 'package:aqarak/core/constants/app_fonts.dart';
-import 'package:pinput/pinput.dart';
+import 'package:aqarak/core/constants/app_colors.dart';
+import 'package:aqarak/core/constants/app_sizes.dart';
+import 'package:aqarak/core/constants/app_strings.dart';
+import 'package:aqarak/core/extensions/context_extensions.dart';
+import 'package:aqarak/presentation/widgets/custom_main_button.dart';
+import 'package:aqarak/presentation/widgets/custom_snack_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/constants/app_colors.dart';
-import '../../core/constants/app_sizes.dart';
-import '../../core/constants/app_strings.dart';
-import '../../core/extensions/context_extensions.dart';
 
-/// Screen for verifying a user's account using an OTP sent to their mobile number.
+/// Screen for verifying a user's account using an email verification link.
 class VerifyAccountPage extends StatefulWidget {
   const VerifyAccountPage({super.key});
 
@@ -19,51 +21,50 @@ class VerifyAccountPage extends StatefulWidget {
 }
 
 class _VerifyAccountPageState extends State<VerifyAccountPage> {
-  final _formKey = GlobalKey<FormState>();
-  final _pinController = TextEditingController();
-  int _timerSeconds = 30;
-  late Timer _timer;
-  bool _canResend = false;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool _isSending = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _startTimer();
-  }
-
-  @override
-  void dispose() {
-    _pinController.dispose();
-    _timer.cancel();
-    super.dispose();
-  }
-
-  void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_timerSeconds > 0) {
-        setState(() {
-          _timerSeconds--;
-        });
-      } else {
-        setState(() {
-          _canResend = true;
-          _timer.cancel();
-        });
-      }
+  // Send email verification link to the current user's email
+  Future<void> _sendVerificationEmail() async {
+    setState(() {
+      _isSending = true;
     });
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        await user.sendEmailVerification();
+        log('Verification email sent to: ${user.email}');
+        CustomSnackBar.show(
+          context,
+          'Verification email sent to ${user.email}',
+        );
+        GoRouter.of(context).go(AppRouter.signInPage);
+      } else {
+        log('No user signed in');
+        CustomSnackBar.show(
+          context,
+          'No user signed in. Please sign up again.',
+        );
+      }
+    } catch (e) {
+      log('Error sending verification email: $e');
+      String errorMessage =
+          'Failed to send verification email. Please try again.';
+      if (e.toString().contains('too-many-requests')) {
+        errorMessage = 'Too many requests. Please wait before trying again.';
+      }
+      CustomSnackBar.show(context, errorMessage);
+    } finally {
+      setState(() {
+        _isSending = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final defaultPinTheme = PinTheme(
-      width: 50,
-      height: 60,
-      textStyle: const TextStyle(fontSize: 20, color: AppColors.primaryBlue),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-        border: Border.all(color: AppColors.accentBlue),
-      ),
-    );
+    final user = _auth.currentUser;
+    final email = user?.email ?? 'your email';
 
     return Scaffold(
       body: Container(
@@ -98,95 +99,43 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
                     children: [
                       const SizedBox(height: 50),
                       Text(
-                        AppStrings.verifyMobile,
+                        'Verify Your Email',
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       const SizedBox(height: AppSizes.padding),
                       Text(
-                        AppStrings.otpSent,
+                        'A verification email has been sent to $email. Please check your inbox and click the link to verify your account.',
                         style: AppFonts.noteStyle,
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 50),
-                      Form(
-                        key: _formKey,
-                        child: Pinput(
-                          length: 6,
-                          controller: _pinController,
-                          defaultPinTheme: defaultPinTheme,
-                          focusedPinTheme: defaultPinTheme.copyWith(
-                            decoration: defaultPinTheme.decoration!.copyWith(
-                              border: Border.all(
-                                color: AppColors.accentBlue,
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                          onCompleted: (pin) {
-                            // Placeholder for OTP verification logic
-                            // context.read<AuthCubit>().performVerification(mobileNumber, pin);
-                          },
-                          validator: (value) => value!.length < 6
-                              ? 'Please enter full OTP'
-                              : null,
-                        ),
-                      ),
-                      const SizedBox(height: 50),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 145,
-                            height: 48,
-                            child: ElevatedButton(
-                              onPressed: _canResend
-                                  ? () {
-                                      setState(() {
-                                        _timerSeconds = 30;
-                                        _canResend = false;
-                                        _startTimer();
-                                      });
-                                      // Placeholder for resend OTP logic
-                                      // context.read<AuthCubit>().resendOTP(mobileNumber);
-                                    }
-                                  : null,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: _canResend
-                                    ? AppColors.primaryGreen
-                                    : AppColors.primaryBlue,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    AppSizes.borderRadius,
-                                  ),
-                                ),
-                              ),
-                              child: Text(
-                                _canResend
-                                    ? 'Resend'
-                                    : 'Resend in $_timerSeconds s',
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: AppSizes.padding),
-                          SizedBox(
-                            width: 150,
-                            height: 48,
-                            child: ElevatedButton(
-                              onPressed: () => context.go(AppRouter.signUpPage),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.accentBlue,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    AppSizes.borderRadius,
-                                  ),
-                                ),
-                              ),
-                              child: Text(AppStrings.changeNumber),
-                            ),
-                          ),
-                        ],
+                      CustomButton(
+                        onPressed: _isSending
+                            ? null
+                            : () => _sendVerificationEmail(),
+                        text: 'Send Email',
+                        isLoading: _isSending,
                       ),
                       const SizedBox(height: 20),
+                      TextButton(
+                        onPressed: () =>
+                            GoRouter.of(context).go(AppRouter.signInPage),
+                        child: Text.rich(
+                          TextSpan(
+                            text: 'Already verified? ',
+                            style: AppFonts.noteStyle,
+                            children: [
+                              TextSpan(
+                                text: 'Sign In',
+                                style: AppFonts.noteStyle.copyWith(
+                                  color: AppColors.accentBlue,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

@@ -4,6 +4,7 @@ import 'package:aqarak/core/extensions/context_extensions.dart';
 import 'package:aqarak/presentation/cubits/splash/splash_cubit.dart';
 import 'package:aqarak/presentation/widgets/animated_apartment_icon.dart';
 import 'package:aqarak/presentation/widgets/animated_app_name.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -17,9 +18,11 @@ class SplashPage extends StatelessWidget {
       listener: (context, state) {
         if (state is SplashComplete) {
           if (state.isLoggedIn) {
-            GoRouter.of(context).go(AppRouter.navigationBarPage);
+            FirebaseAuth.instance.currentUser!.emailVerified
+                ? GoRouter.of(context).go(AppRouter.navigationBarPage)
+                : GoRouter.of(context).go(AppRouter.verifyAccountPage);
           } else {
-            GoRouter.of(context).go(AppRouter.signUpPage);
+            GoRouter.of(context).go(AppRouter.signInPage);
           }
         }
       },

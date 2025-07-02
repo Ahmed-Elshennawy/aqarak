@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:aqarak/domain/entities/user_model.dart';
 
@@ -10,17 +12,26 @@ class AuthRemoteDataSource {
     String fullName,
     String mobileNumber,
   ) async {
-    final userCredential = await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    await userCredential.user?.updateDisplayName(fullName);
-    return UserModel(
-      id: userCredential.user?.uid,
-      email: email,
-      fullName: fullName,
-      mobileNumber: mobileNumber,
-    );
+    try {
+      log('AuthRemoteDataSource: Starting signUp with email: $email');
+      final userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      await userCredential.user?.updateDisplayName(fullName);
+      log(
+        'AuthRemoteDataSource: SignUp completed for user: ${userCredential.user?.uid}',
+      );
+      return UserModel(
+        id: userCredential.user?.uid,
+        email: email,
+        fullName: fullName,
+        mobileNumber: mobileNumber,
+      );
+    } catch (e) {
+      log('AuthRemoteDataSource: SignUp error: $e');
+      rethrow;
+    }
   }
 
   Future<UserModel> signIn(String email, String password) async {

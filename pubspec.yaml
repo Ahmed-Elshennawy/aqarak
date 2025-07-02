@@ -54,6 +54,9 @@ dependencies:
   intl: ^0.20.2
   image_picker: ^1.1.2
   firebase_storage: ^12.4.7
+  google_sign_in: ^7.0.0
+  firebase_messaging: ^15.2.8
+  firebase_app_check: ^0.3.2+8
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1

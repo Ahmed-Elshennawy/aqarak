@@ -1,4 +1,5 @@
-// lib/presentation/pages/sign_up_page.dart
+import 'dart:developer';
+
 import 'package:aqarak/app_router.dart';
 import 'package:aqarak/core/constants/app_fonts.dart';
 import 'package:aqarak/presentation/cubits/auth/auth_cubit.dart';
@@ -44,9 +45,11 @@ class _SignUpPageState extends State<SignUpPage> {
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
+            log('AuthSuccess: Navigating to verifyAccountPage');
             CustomSnackBar.show(context, 'Account created successfully!');
-            GoRouter.of(context).go(AppRouter.verifyAccountPage);
+            GoRouter.of(context).go(AppRouter.navigationBarPage);
           } else if (state is AuthFailure) {
+            log('AuthFailure: ${state.message}');
             CustomSnackBar.show(context, _parseFirebaseError(state.message));
           }
         },
@@ -127,12 +130,15 @@ class _SignUpPageState extends State<SignUpPage> {
                             CustomButton(
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
+                                  log('Form validated, calling performSignUp');
                                   context.read<AuthCubit>().performSignUp(
                                     _emailController.text,
                                     _passwordController.text,
                                     _fullNameController.text,
                                     _mobileController.text,
                                   );
+                                } else {
+                                  log('Form validation failed');
                                 }
                               },
                               text: AppStrings.createAccount,
@@ -142,8 +148,10 @@ class _SignUpPageState extends State<SignUpPage> {
                             DifferentSignToAppAndTerms(),
                             const SizedBox(height: AppSizes.padding),
                             TextButton(
-                              onPressed: () =>
-                                  GoRouter.of(context).go(AppRouter.signInPage),
+                              onPressed: () {
+                                log('Navigating to signInPage');
+                                GoRouter.of(context).go(AppRouter.signInPage);
+                              },
                               child: Text.rich(
                                 TextSpan(
                                   text: 'Already have an account? ',
@@ -175,6 +183,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   String _parseFirebaseError(String errorMessage) {
+    log('Parsing error: $errorMessage');
     if (errorMessage.contains('user-not-found')) {
       return 'No account found with this email. Please sign up first.';
     }
@@ -205,7 +214,9 @@ class _SignUpPageState extends State<SignUpPage> {
     if (errorMessage.contains('operation-not-allowed')) {
       return 'This sign-in method is not enabled. Please contact support.';
     }
-
+    if (errorMessage.contains('permission-denied')) {
+      return 'Unable to save user data. Please try again later.';
+    }
     return 'An unexpected error occurred. Please try again.';
   }
 }

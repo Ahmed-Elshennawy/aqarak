@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:developer';
+
 import 'package:aqarak/app_router.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
@@ -34,18 +36,39 @@ class AuthCubit extends Cubit<AuthState> {
   ) async {
     emit(AuthLoading());
     final result = await signUp(email, password, fullName, mobileNumber);
-    result.fold((failure) => emit(AuthFailure(failure.toString())), (
-      user,
-    ) async {
-      await FirebaseFirestore.instance.collection('users').doc(user.id).set({
-        'uid': user.id,
-        'email': user.email,
-        'fullName': user.fullName,
-        'mobileNumber': user.mobileNumber,
-      });
-      emit(AuthSuccess(user.toString()));
-      router.go(AppRouter.verifyAccountPage);
-    });
+    await result.fold(
+      (failure) async {
+        log('SignUp failed: $failure');
+        emit(AuthFailure(failure.toString()));
+      },
+      (user) async {
+        try {
+          // Attempt Firestore write but don't block navigation
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.id)
+              .set({
+                'uid': user.id,
+                'email': user.email,
+                'fullName': user.fullName,
+                'mobileNumber': user.mobileNumber,
+              })
+              .timeout(
+                const Duration(seconds: 5),
+                onTimeout: () {
+                  throw Exception('Firestore write timed out');
+                },
+              );
+          log('Firestore write successful for user: ${user.id}');
+        } catch (e) {
+          log('Firestore write failed: $e');
+          // Continue to verification even if Firestore fails
+        }
+        emit(AuthSuccess(user.toString()));
+        log('Navigating to navigationBarPage for user: ${user.id}');
+        router.go(AppRouter.navigationBarPage);
+      },
+    );
   }
 
   void performSignIn(String email, String password) async {

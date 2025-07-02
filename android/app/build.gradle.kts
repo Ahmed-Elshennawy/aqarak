@@ -45,3 +45,9 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+  implementation("com.google.firebase:firebase-appcheck-playintegrity:17.0.0")
+  implementation("com.google.android.gms:play-services-base:18.1.0")
+  implementation("com.google.android.gms:play-services-safetynet:18.1.0")
+}

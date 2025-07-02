@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:aqarak/app_router.dart';
 import 'package:aqarak/core/constants/app_strings.dart';
 import 'package:aqarak/core/constants/app_themes.dart';
@@ -12,17 +14,26 @@ import 'package:aqarak/domain/usecases/verify_otp.dart';
 import 'package:aqarak/presentation/cubits/auth/auth_cubit.dart';
 import 'package:aqarak/presentation/cubits/splash/splash_cubit.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  await Hive.initFlutter();
-  Hive.registerAdapter(PlaceModelAdapter());
-  await PlaceLocalDataSource().init();
-  runApp(const Aqarak());
+  try {
+    await Firebase.initializeApp();
+    await FirebaseAppCheck.instance.activate(
+      webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+      androidProvider: AndroidProvider.playIntegrity,
+    );
+    await Hive.initFlutter();
+    Hive.registerAdapter(PlaceModelAdapter());
+    await PlaceLocalDataSource().init();
+    runApp(const Aqarak());
+  } catch (e) {
+    log('Initialization error: $e');
+  }
 }
 
 class Aqarak extends StatelessWidget {
@@ -30,7 +41,6 @@ class Aqarak extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Initialize AuthRepository and Use Cases
     final authRemoteDataSource = AuthRemoteDataSource();
     final authRepository = AuthRepositoryImpl(authRemoteDataSource);
     final signUp = SignUp(repository: authRepository);

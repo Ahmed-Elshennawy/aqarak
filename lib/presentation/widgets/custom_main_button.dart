@@ -38,7 +38,11 @@ class CustomButton extends StatelessWidget {
           ),
         ),
         child: isLoading
-            ? const CircularProgressIndicator(color: AppColors.primaryGreen)
+            ? const CircularProgressIndicator(
+                color: AppColors.primaryGreen,
+                strokeWidth: 2,
+                padding: EdgeInsets.all(8),
+              )
             : Text(
                 text,
                 style: const TextStyle(fontSize: 16, color: Colors.white),

@@ -31,6 +31,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        multiDexEnabled = true
     }
 
     buildTypes {
@@ -50,4 +51,5 @@ dependencies {
     implementation("com.google.firebase:firebase-appcheck-playintegrity:17.0.0")
     implementation("com.google.android.gms:play-services-base:18.1.0")
     implementation("com.google.android.gms:play-services-safetynet:18.1.0")
+    implementation("com.facebook.android:facebook-android-sdk:18.0.3")
 }

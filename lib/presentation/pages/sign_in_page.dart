@@ -51,7 +51,7 @@ class _SignInPageState extends State<SignInPage> {
             FirebaseAuth.instance.currentUser!.emailVerified
                 ? GoRouter.of(context).go(AppRouter.navigationBarPage)
                 : GoRouter.of(context).go(AppRouter.verifyAccountPage);
-          } else if (state is AuthFailure) {
+        } else if (state is AuthFailure) {
             CustomSnackBar.show(context, _parseFirebaseError(state.message));
           }
         },

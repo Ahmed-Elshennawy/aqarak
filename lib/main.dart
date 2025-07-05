@@ -13,6 +13,7 @@ import 'package:aqarak/domain/usecases/sign_up.dart';
 import 'package:aqarak/domain/usecases/verify_otp.dart';
 import 'package:aqarak/presentation/cubits/auth/auth_cubit.dart';
 import 'package:aqarak/presentation/cubits/splash/splash_cubit.dart';
+import 'package:aqarak/presentation/pages/sign_in_demo.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
@@ -28,10 +29,7 @@ void main() async {
       webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
       androidProvider: AndroidProvider.playIntegrity,
     );
-    await GoogleSignIn.instance.initialize(
-      serverClientId:
-          '204029371189-lo1llb38dmouqfska98ioiudtpqhactt.apps.googleusercontent.com',
-    );
+    await GoogleSignIn.instance.initialize(serverClientId: serverClientId);
     await Hive.initFlutter();
     Hive.registerAdapter(PlaceModelAdapter());
     await PlaceLocalDataSource().init();

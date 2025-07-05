@@ -25,9 +25,7 @@ class DifferentSignToAppAndTerms extends StatelessWidget {
           loginResult.accessToken != null) {
         final OAuthCredential facebookAuthCredential =
             FacebookAuthProvider.credential(
-              loginResult
-                  .accessToken!
-                  .tokenString, // Use tokenString instead of token
+              loginResult.accessToken!.tokenString,
             );
         final userCredential = await FirebaseAuth.instance.signInWithCredential(
           facebookAuthCredential,
@@ -76,7 +74,7 @@ class DifferentSignToAppAndTerms extends StatelessWidget {
         CustomSnackBar.show(context, 'Sign in failed');
       }
     } catch (e) {
-      CustomSnackBar.show(context, 'Error: $e');
+      // CustomSnackBar.show(context, 'Error: $e');
       log(e.toString());
     }
   }

@@ -1,4 +1,8 @@
 // location_search_constants.dart
+
+const googleserverClientId =
+    '204029371189-lo1llb38dmouqfska98ioiudtpqhactt.apps.googleusercontent.com';
+
 class LocationSearchConstants {
   static const String apiKey = 'YOUR_GOOGLE_PLACES_API_KEY';
   static const String countryCode = 'eg'; // Egypt country code

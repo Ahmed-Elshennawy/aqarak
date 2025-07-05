@@ -3,5 +3,4 @@
     <string name="app_name">Aqarak</string>
     <string name="facebook_app_id">2441430612908015</string>
     <string name="fb_login_protocol_scheme">fb2441430612908015</string>
-    <string name="facebook_client_token">e0a792f717305da5f51fd8114689ed2d</string>
 </resources>

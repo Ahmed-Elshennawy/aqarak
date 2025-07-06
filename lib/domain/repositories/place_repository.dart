@@ -1,3 +1,4 @@
+import 'package:aqarak/data/models/place_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import '../entities/place.dart';
@@ -20,5 +21,5 @@ abstract class PlaceRepository {
     DocumentSnapshot? lastDoc,
   });
 
-  Future<Either<Exception, void>> addPlace(Place place);
+  Future<Either<Exception, void>> addPlace(PlaceModel place);
 }

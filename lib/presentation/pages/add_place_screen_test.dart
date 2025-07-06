@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:aqarak/data/datasources/loca_datassources/place_local_datastore.dart';
 import 'package:aqarak/data/datasources/remote_datasources/place_remote_datasource.dart';
 import 'package:aqarak/data/repositories/place_repository_impl.dart';
@@ -9,8 +8,6 @@ import 'package:aqarak/presentation/cubits/search_places_cubit.dart';
 import 'package:aqarak/presentation/widgets/custom_main_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:uuid/uuid.dart';
 import '../../core/constants/app_sizes.dart';
 import '../../domain/entities/place.dart';
@@ -26,34 +23,25 @@ class AddPlaceScreenState extends State<AddPlaceScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _locationController = TextEditingController();
+  final _imageUrlController =
+      TextEditingController(); // New controller for image URL
   String _type = 'Hotel';
   bool _isAirConditioned = false;
-  File? _selectedImage;
-
-  final ImagePicker _picker = ImagePicker();
-
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _selectedImage = File(pickedFile.path);
-      });
-    }
-  }
-
-  Future<String> _uploadImage(File image) async {
-    final storageRef = firebase_storage.FirebaseStorage.instance.ref().child(
-      'place_images/${Uuid().v4()}.jpg',
-    );
-    await storageRef.putFile(image);
-    return await storageRef.getDownloadURL();
-  }
 
   @override
   void dispose() {
     _nameController.dispose();
     _locationController.dispose();
+    _imageUrlController.dispose(); // Dispose new controller
     super.dispose();
+  }
+
+  // Validate URL format
+  String? _validateImageUrl(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter an image URL';
+    }
+    return null;
   }
 
   @override
@@ -96,26 +84,12 @@ class AddPlaceScreenState extends State<AddPlaceScreen> {
                         value!.isEmpty ? 'Please enter a name' : null,
                   ),
                   SizedBox(height: AppSizes.padding),
-                  // THE SELECTED PLACE IMAGE
-                  GestureDetector(
-                    onTap: _pickImage,
-                    child: Container(
-                      height: 180,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.grey),
-                        image: _selectedImage != null
-                            ? DecorationImage(
-                                image: FileImage(_selectedImage!),
-                                fit: BoxFit.cover,
-                              )
-                            : null,
-                      ),
-                      child: _selectedImage == null
-                          ? const Center(child: Text('Tap to select image'))
-                          : null,
-                    ),
+                  // IMAGE URL TEXT FIELD
+                  TextFormField(
+                    controller: _imageUrlController,
+                    decoration: const InputDecoration(labelText: 'Image URL'),
+                    validator: _validateImageUrl,
+                    keyboardType: TextInputType.url,
                   ),
                   SizedBox(height: AppSizes.padding),
                   // THE PLACE LOCATION TEXT FIELD
@@ -146,7 +120,7 @@ class AddPlaceScreenState extends State<AddPlaceScreen> {
                     onChanged: (value) =>
                         setState(() => _isAirConditioned = value!),
                   ),
-                  const SizedBox(height: 180),
+                  const SizedBox(height: 290),
                   // THE ADD PLACE BUTTON
                   BlocConsumer<SearchPlacesCubit, SearchPlacesState>(
                     listener: (context, state) {
@@ -165,26 +139,16 @@ class AddPlaceScreenState extends State<AddPlaceScreen> {
                     },
                     builder: (context, state) {
                       return CustomButton(
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate() &&
-                              _selectedImage != null) {
-                            final imageUrl = await _uploadImage(
-                              _selectedImage!,
-                            );
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
                             context.read<SearchPlacesCubit>().addNewPlace(
                               Place(
                                 id: const Uuid().v4(),
                                 name: _nameController.text,
-                                imageUrl: imageUrl,
+                                imageUrl: _imageUrlController.text,
                                 location: _locationController.text,
                                 type: _type,
                                 isAirConditioned: _isAirConditioned,
-                              ),
-                            );
-                          } else if (_selectedImage == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Please select an image'),
                               ),
                             );
                           }

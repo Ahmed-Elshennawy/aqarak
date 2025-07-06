@@ -81,9 +81,9 @@ class PlaceRepositoryImpl implements PlaceRepository {
   }
 
   @override
-  Future<Either<Exception, void>> addPlace(Place place) async {
+  Future<Either<Exception, void>> addPlace(PlaceModel place) async {
     try {
-      await remoteDataSource.addPlace(PlaceModel.fromEntity(place));
+      await remoteDataSource.addPlace(place);
       return const Right(null);
     } catch (e) {
       return Left(Exception(e.toString()));

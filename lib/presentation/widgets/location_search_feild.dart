@@ -6,9 +6,16 @@ import 'dart:convert';
 import 'dart:async';
 
 class LocationSearchField extends StatefulWidget {
+  final bool isSearch;
+  final String label;
   final Function(String)? onLocationSelected;
 
-  const LocationSearchField({super.key, this.onLocationSelected});
+  const LocationSearchField({
+    super.key,
+    this.onLocationSelected,
+    required this.isSearch,
+    required this.label,
+  });
 
   @override
   LocationSearchFieldState createState() => LocationSearchFieldState();
@@ -194,11 +201,13 @@ class LocationSearchFieldState extends State<LocationSearchField> {
       controller: controller,
       focusNode: _focusNode,
       onChanged: _onTextChanged,
-      decoration: const InputDecoration(
-        labelText: 'Where do you want',
+      decoration: InputDecoration(
+        labelText: widget.label,
         labelStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
-        prefixIcon: Icon(Icons.location_on_outlined, color: Colors.blue),
-        suffixIcon: Icon(Icons.search),
+        prefixIcon: widget.isSearch
+            ? Icon(Icons.location_on_outlined, color: Colors.blue)
+            : null,
+        suffixIcon: widget.isSearch ? Icon(Icons.search) : null,
       ),
     ),
   );

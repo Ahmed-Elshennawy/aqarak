@@ -1,8 +1,21 @@
 import 'package:aqarak/data/models/place_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class PlaceRemoteDataSource {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<List<PlaceModel>> getPlaces() async {
+    final querySnapshot = await _firestore
+        .collection('places')
+        .where('userId', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .orderBy('__name__')
+        .get();
+
+    return querySnapshot.docs
+        .map((doc) => PlaceModel.fromJson(doc.data()))
+        .toList();
+  }
 
   Future<List<PlaceModel>> searchPlaces({
     required String location,
@@ -14,6 +27,7 @@ class PlaceRemoteDataSource {
         .where('location', isEqualTo: location)
         .where('type', isEqualTo: type)
         .where('isAirConditioned', isEqualTo: isAirConditioned)
+        .where('userId', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .orderBy('__name__')
         .get();
 

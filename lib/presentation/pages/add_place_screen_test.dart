@@ -5,6 +5,7 @@ import 'package:aqarak/domain/usecases/get_places_by_location.dart';
 import 'package:aqarak/domain/usecases/search_places.dart';
 import 'package:aqarak/presentation/cubits/search_places_cubit.dart';
 import 'package:aqarak/presentation/widgets/custom_main_button.dart';
+import 'package:aqarak/presentation/widgets/location_search_feild.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,19 +50,13 @@ class AddPlaceScreenState extends State<AddPlaceScreen> {
     return BlocProvider(
       create: (context) => SearchPlacesCubit(
         searchPlaces: SearchPlaces(
-          PlaceRepositoryImpl(
-            remoteDataSource: PlaceRemoteDataSource(),
-          ),
+          PlaceRepositoryImpl(remoteDataSource: PlaceRemoteDataSource()),
         ),
         getPlacesByLocation: GetPlacesByLocation(
-          PlaceRepositoryImpl(
-            remoteDataSource: PlaceRemoteDataSource(),
-          ),
+          PlaceRepositoryImpl(remoteDataSource: PlaceRemoteDataSource()),
         ),
         addPlace: AddPlace(
-          PlaceRepositoryImpl(
-            remoteDataSource: PlaceRemoteDataSource(),
-          ),
+          PlaceRepositoryImpl(remoteDataSource: PlaceRemoteDataSource()),
         ),
       ),
       child: Scaffold(
@@ -90,12 +85,19 @@ class AddPlaceScreenState extends State<AddPlaceScreen> {
                   ),
                   SizedBox(height: AppSizes.padding),
                   // THE PLACE LOCATION TEXT FIELD
-                  TextFormField(
-                    controller: _locationController,
-                    decoration: const InputDecoration(labelText: 'Location'),
-                    validator: (value) =>
-                        value!.isEmpty ? 'Please enter a location' : null,
+                  LocationSearchField(
+                    isSearch: false,
+                    label: ' Location',
+                    onLocationSelected: (p0) {
+                      _locationController.text = p0;
+                    },
                   ),
+                  // TextFormField(
+                  //   controller: _locationController,
+                  //   decoration: const InputDecoration(labelText: 'Location'),
+                  //   validator: (value) =>
+                  //       value!.isEmpty ? 'Please enter a location' : null,
+                  // ),
                   SizedBox(height: AppSizes.padding),
                   // THE PLACE TYPE (HOTEL or VILLA)
                   DropdownButtonFormField<String>(

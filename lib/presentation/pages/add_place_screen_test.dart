@@ -1,11 +1,11 @@
-import 'package:aqarak/data/datasources/loca_datassources/place_local_datastore.dart';
-import 'package:aqarak/data/datasources/remote_datasources/place_remote_datasource.dart';
+import 'package:aqarak/data/datasources/place_remote_datasource.dart';
 import 'package:aqarak/data/repositories/place_repository_impl.dart';
 import 'package:aqarak/domain/usecases/add_place.dart';
 import 'package:aqarak/domain/usecases/get_places_by_location.dart';
 import 'package:aqarak/domain/usecases/search_places.dart';
 import 'package:aqarak/presentation/cubits/search_places_cubit.dart';
 import 'package:aqarak/presentation/widgets/custom_main_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
@@ -51,19 +51,16 @@ class AddPlaceScreenState extends State<AddPlaceScreen> {
         searchPlaces: SearchPlaces(
           PlaceRepositoryImpl(
             remoteDataSource: PlaceRemoteDataSource(),
-            localDataSource: PlaceLocalDataSource(),
           ),
         ),
         getPlacesByLocation: GetPlacesByLocation(
           PlaceRepositoryImpl(
             remoteDataSource: PlaceRemoteDataSource(),
-            localDataSource: PlaceLocalDataSource(),
           ),
         ),
         addPlace: AddPlace(
           PlaceRepositoryImpl(
             remoteDataSource: PlaceRemoteDataSource(),
-            localDataSource: PlaceLocalDataSource(),
           ),
         ),
       ),
@@ -143,6 +140,7 @@ class AddPlaceScreenState extends State<AddPlaceScreen> {
                           if (_formKey.currentState!.validate()) {
                             context.read<SearchPlacesCubit>().addNewPlace(
                               Place(
+                                userId: FirebaseAuth.instance.currentUser!.uid,
                                 id: const Uuid().v4(),
                                 name: _nameController.text,
                                 imageUrl: _imageUrlController.text,

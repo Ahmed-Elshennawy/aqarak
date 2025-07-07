@@ -4,8 +4,6 @@ import 'package:aqarak/app_router.dart';
 import 'package:aqarak/core/constants/app_strings.dart';
 import 'package:aqarak/core/constants/app_themes.dart';
 import 'package:aqarak/data/datasources/auth_remote_datasource.dart';
-import 'package:aqarak/data/datasources/loca_datassources/place_local_datastore.dart';
-import 'package:aqarak/data/models/place_model_adapter.dart';
 import 'package:aqarak/data/repositories/auth_repository_impl.dart';
 import 'package:aqarak/domain/usecases/reset_password.dart';
 import 'package:aqarak/domain/usecases/sign_in.dart';
@@ -19,7 +17,6 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,9 +27,6 @@ void main() async {
       androidProvider: AndroidProvider.playIntegrity,
     );
     await GoogleSignIn.instance.initialize(serverClientId: serverClientId);
-    await Hive.initFlutter();
-    Hive.registerAdapter(PlaceModelAdapter());
-    await PlaceLocalDataSource().init();
     runApp(const Aqarak());
   } catch (e) {
     log('Initialization error: $e');

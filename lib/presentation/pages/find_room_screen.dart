@@ -1,6 +1,5 @@
 import 'dart:developer';
-import 'package:aqarak/data/datasources/loca_datassources/place_local_datastore.dart';
-import 'package:aqarak/data/datasources/remote_datasources/place_remote_datasource.dart';
+import 'package:aqarak/data/datasources/place_remote_datasource.dart';
 import 'package:aqarak/data/repositories/place_repository_impl.dart';
 import 'package:aqarak/domain/usecases/add_place.dart';
 import 'package:aqarak/domain/usecases/get_places_by_location.dart';
@@ -32,22 +31,13 @@ class FindRoomScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => SearchPlacesCubit(
         searchPlaces: SearchPlaces(
-          PlaceRepositoryImpl(
-            remoteDataSource: PlaceRemoteDataSource(),
-            localDataSource: PlaceLocalDataSource(),
-          ),
+          PlaceRepositoryImpl(remoteDataSource: PlaceRemoteDataSource()),
         ),
         getPlacesByLocation: GetPlacesByLocation(
-          PlaceRepositoryImpl(
-            remoteDataSource: PlaceRemoteDataSource(),
-            localDataSource: PlaceLocalDataSource(),
-          ),
+          PlaceRepositoryImpl(remoteDataSource: PlaceRemoteDataSource()),
         ),
         addPlace: AddPlace(
-          PlaceRepositoryImpl(
-            remoteDataSource: PlaceRemoteDataSource(),
-            localDataSource: PlaceLocalDataSource(),
-          ),
+          PlaceRepositoryImpl(remoteDataSource: PlaceRemoteDataSource()),
         ),
       ),
       child: MultiBlocProvider(

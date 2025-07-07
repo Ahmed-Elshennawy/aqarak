@@ -1,6 +1,7 @@
 import 'package:aqarak/domain/entities/place.dart';
 
 class PlaceModel {
+  final String userId;
   final String id;
   final String name;
   final String imageUrl;
@@ -9,6 +10,7 @@ class PlaceModel {
   final bool isAirConditioned;
 
   PlaceModel({
+    required this.userId,
     required this.id,
     required this.name,
     required this.imageUrl,
@@ -19,6 +21,7 @@ class PlaceModel {
 
   factory PlaceModel.fromJson(Map<String, dynamic> json) {
     return PlaceModel(
+      userId: json['userId'] as String? ?? 'unknown_id',
       id: json['id'] as String? ?? 'unknown_id',
       name: json['name'] as String? ?? 'Unnamed Place',
       imageUrl: json['imageUrl'] as String? ?? '',
@@ -30,6 +33,7 @@ class PlaceModel {
 
   Map<String, dynamic> toJson() {
     return {
+      'userId': userId,
       'id': id,
       'name': name,
       'imageUrl': imageUrl,
@@ -41,6 +45,7 @@ class PlaceModel {
 
   factory PlaceModel.fromEntity(Place entity) {
     return PlaceModel(
+      userId: entity.userId,
       id: entity.id,
       name: entity.name,
       imageUrl: entity.imageUrl,
@@ -52,6 +57,7 @@ class PlaceModel {
 
   Place toEntity() {
     return Place(
+      userId: userId,
       id: id,
       name: name,
       imageUrl: imageUrl,

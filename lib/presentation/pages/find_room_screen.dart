@@ -39,9 +39,9 @@ class FindRoomScreen extends StatelessWidget {
             PlaceRepositoryImpl(remoteDataSource: PlaceRemoteDataSource()),
           ),
         );
-        cubit.places();
-        cubit.nearbyPlaces("Alexandria, Egypt");
-        cubit.loadBestPlaces("Cairo, Egypt");
+        cubit.getAllPlaces();
+        cubit.getNearbyPlaces("Alexandria, Egypt");
+        cubit.getBestPlaces("Cairo, Egypt");
         return cubit;
       },
       child: MultiBlocProvider(
@@ -67,7 +67,8 @@ class FindRoomScreen extends StatelessWidget {
                     // ALL PLACES FROM API
                     BlocBuilder<PlacesCubit, PlacesState>(
                       builder: (context, state) {
-                        if (state is PlacesLoading) {
+                        if (state.status == PlacesStatus.loading &&
+                            state.operation == PlaceOperation.allPlaces) {
                           return HorizontalCardList(
                             sectionTitle: 'Places',
                             items: List.generate(
@@ -76,7 +77,8 @@ class FindRoomScreen extends StatelessWidget {
                             ),
                             itemBuilder: (context, index) => ShimmerPlaceCard(),
                           );
-                        } else if (state is PlacesLoaded) {
+                        }
+                        if (state.places.isNotEmpty) {
                           return HorizontalCardList(
                             sectionTitle: 'Places',
                             items: state.places
@@ -88,12 +90,14 @@ class FindRoomScreen extends StatelessWidget {
                                 )
                                 .toList(),
                           );
-                        } else if (state is PlacesError) {
+                        }
+                        if (state.status == PlacesStatus.error &&
+                            state.operation == PlaceOperation.allPlaces) {
                           CustomSnackBar.show(
                             context,
                             'Can\'t Find Places, please try again.',
                           );
-                          log('Error message ${state.message}');
+                          log('Error message ${state.errorMessage}');
                         }
                         return HorizontalCardList(
                           sectionTitle: 'Places',
@@ -110,7 +114,8 @@ class FindRoomScreen extends StatelessWidget {
                     // THE PLACES IN YOUR LOCATION
                     BlocBuilder<PlacesCubit, PlacesState>(
                       builder: (context, state) {
-                        if (state is NearbyPlacesLoading) {
+                        if (state.status == PlacesStatus.loading &&
+                            state.operation == PlaceOperation.nearbyPlaces) {
                           return HorizontalCardList(
                             sectionTitle: 'Explore Nearby',
                             items: List.generate(
@@ -119,24 +124,36 @@ class FindRoomScreen extends StatelessWidget {
                             ),
                             itemBuilder: (context, index) => ShimmerPlaceCard(),
                           );
-                        } else if (state is NearbyPlacesLoaded) {
+                        }
+                        if (state.nearbyPlaces.isNotEmpty) {
+                          return HorizontalCardList(
+                            sectionTitle: 'Explore Nearby',
+                            items: state.places
+                                .map(
+                                  (place) => {
+                                    'imageUrl': place.imageUrl,
+                                    'title': place.name,
+                                  },
+                                )
+                                .toList(),
+                          );
+                        }
+                        if (state.status == PlacesStatus.error &&
+                            state.operation == PlaceOperation.nearbyPlaces) {
                           return Column(
                             children: [
-                              HorizontalCardList(
-                                sectionTitle: 'Explore Nearby',
-                                items: state.places
-                                    .map(
-                                      (place) => {
-                                        'imageUrl': place.imageUrl,
-                                        'title': place.name,
-                                      },
-                                    )
-                                    .toList(),
+                              Text(
+                                state.errorMessage ??
+                                    'Error loading nearby places',
+                              ),
+                              ElevatedButton(
+                                onPressed: () => context
+                                    .read<PlacesCubit>()
+                                    .getNearbyPlaces("Alexandria, Egypt"),
+                                child: const Text('Retry'),
                               ),
                             ],
                           );
-                        } else if (state is NearbyPlacesError) {
-                          return Text(state.message);
                         }
                         return HorizontalCardList(
                           sectionTitle: 'Explore Nearby',
@@ -150,9 +167,11 @@ class FindRoomScreen extends StatelessWidget {
                       thickness: 3,
                     ),
                     const SizedBox(height: AppSizes.padding),
+                    // BEST PLACES
                     BlocBuilder<PlacesCubit, PlacesState>(
                       builder: (context, state) {
-                        if (state is BestPlacesLoading) {
+                        if (state.status == PlacesStatus.loading &&
+                            state.operation == PlaceOperation.bestPlaces) {
                           return HorizontalCardList(
                             sectionTitle: 'Best Places',
                             items: List.generate(
@@ -162,25 +181,37 @@ class FindRoomScreen extends StatelessWidget {
                             itemBuilder: (context, index) => ShimmerPlaceCard(),
                             onViewAll: () => context.read<PlacesCubit>(),
                           );
-                        } else if (state is BestPlacesLoaded) {
+                        }
+                        if (state.bestPlaces.isNotEmpty) {
+                          return HorizontalCardList(
+                            sectionTitle: 'Best Places',
+                            items: state.places
+                                .map(
+                                  (place) => {
+                                    'imageUrl': place.imageUrl,
+                                    'title': place.name,
+                                  },
+                                )
+                                .toList(),
+                            onViewAll: () => context.read<PlacesCubit>(),
+                          );
+                        }
+                        if (state.status == PlacesStatus.error &&
+                            state.operation == PlaceOperation.bestPlaces) {
                           return Column(
                             children: [
-                              HorizontalCardList(
-                                sectionTitle: 'Best Places',
-                                items: state.places
-                                    .map(
-                                      (place) => {
-                                        'imageUrl': place.imageUrl,
-                                        'title': place.name,
-                                      },
-                                    )
-                                    .toList(),
-                                onViewAll: () => context.read<PlacesCubit>(),
+                              Text(
+                                state.errorMessage ??
+                                    'Error loading best places',
+                              ),
+                              ElevatedButton(
+                                onPressed: () => context
+                                    .read<PlacesCubit>()
+                                    .getBestPlaces("Cairo, Egypt"),
+                                child: const Text('Retry'),
                               ),
                             ],
                           );
-                        } else if (state is BestPlacesError) {
-                          return Text(state.message);
                         }
                         return HorizontalCardList(
                           sectionTitle: 'Best Places',

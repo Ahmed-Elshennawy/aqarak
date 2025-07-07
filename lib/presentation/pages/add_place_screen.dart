@@ -25,8 +25,7 @@ class AddPlaceScreenState extends State<AddPlaceScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _locationController = TextEditingController();
-  final _imageUrlController =
-      TextEditingController(); // New controller for image URL
+  final _imageUrlController = TextEditingController();
   String _type = 'Hotel';
   bool _isAirConditioned = false;
 
@@ -34,11 +33,10 @@ class AddPlaceScreenState extends State<AddPlaceScreen> {
   void dispose() {
     _nameController.dispose();
     _locationController.dispose();
-    _imageUrlController.dispose(); // Dispose new controller
+    _imageUrlController.dispose();
     super.dispose();
   }
 
-  // Validate URL format
   String? _validateImageUrl(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter an image URL';
@@ -72,7 +70,6 @@ class AddPlaceScreenState extends State<AddPlaceScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  // PLACE NAME TEXT FIELD
                   TextFormField(
                     controller: _nameController,
                     decoration: const InputDecoration(labelText: 'Place Name'),
@@ -80,7 +77,6 @@ class AddPlaceScreenState extends State<AddPlaceScreen> {
                         value!.isEmpty ? 'Please enter a name' : null,
                   ),
                   SizedBox(height: AppSizes.padding),
-                  // IMAGE URL TEXT FIELD
                   TextFormField(
                     controller: _imageUrlController,
                     decoration: const InputDecoration(labelText: 'Image URL'),
@@ -88,16 +84,14 @@ class AddPlaceScreenState extends State<AddPlaceScreen> {
                     keyboardType: TextInputType.url,
                   ),
                   SizedBox(height: AppSizes.padding),
-                  // THE PLACE LOCATION TEXT FIELD
                   LocationSearchField(
                     isSearch: false,
-                    label: ' Location',
+                    label: 'Location',
                     onLocationSelected: (p0) {
                       _locationController.text = p0;
                     },
                   ),
                   SizedBox(height: AppSizes.padding),
-                  // THE PLACE TYPE (HOTEL or VILLA)
                   DropdownButtonFormField<String>(
                     value: _type,
                     items: ['Hotel', 'Villa']
@@ -110,7 +104,6 @@ class AddPlaceScreenState extends State<AddPlaceScreen> {
                     decoration: const InputDecoration(labelText: 'Type'),
                   ),
                   SizedBox(height: AppSizes.padding),
-                  // IS AIR CONDITIONED OR NOT
                   CheckboxListTile(
                     title: const Text('Air Conditioned'),
                     value: _isAirConditioned,
@@ -118,20 +111,25 @@ class AddPlaceScreenState extends State<AddPlaceScreen> {
                         setState(() => _isAirConditioned = value!),
                   ),
                   const SizedBox(height: 290),
-                  // THE ADD PLACE BUTTON
                   BlocConsumer<PlacesCubit, PlacesState>(
                     listener: (context, state) {
-                      if (state is AddPlaceSuccess) {
+                      if (state.status == PlacesStatus.success &&
+                          state.operation == PlaceOperation.addPlace) {
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Place added successfully'),
                           ),
                         );
-                      } else if (state is AddPlaceError) {
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(SnackBar(content: Text(state.message)));
+                      } else if (state.status == PlacesStatus.error &&
+                          state.operation == PlaceOperation.addPlace) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              state.errorMessage ?? 'Error adding place',
+                            ),
+                          ),
+                        );
                       }
                     },
                     builder: (context, state) {
@@ -152,7 +150,9 @@ class AddPlaceScreenState extends State<AddPlaceScreen> {
                           }
                         },
                         text: 'Add Place',
-                        isLoading: state is AddPlaceLoading,
+                        isLoading:
+                            state.status == PlacesStatus.loading &&
+                            state.operation == PlaceOperation.addPlace,
                       );
                     },
                   ),

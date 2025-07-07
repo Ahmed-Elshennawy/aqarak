@@ -16,107 +16,189 @@ class PlacesCubit extends Cubit<PlacesState> {
     required this.searchPlaces,
     required this.getPlacesByLocation,
     required this.addPlace,
-  }) : super(PlacesInitial());
+  }) : super(PlacesState());
 
-  Future<void> places() async {
-    emit(PlacesLoading());
+  Future<void> getAllPlaces() async {
+    emit(
+      state.copyWith(
+        status: PlacesStatus.loading,
+        operation: PlaceOperation.allPlaces,
+      ),
+    );
     final result = await getPlaces();
     result.fold(
-      (error) => emit(PlacesError(error.toString())),
-      (places) => emit(PlacesLoaded(places: places)),
+      (error) => emit(
+        state.copyWith(
+          status: PlacesStatus.error,
+          operation: PlaceOperation.allPlaces,
+          errorMessage: error.toString(),
+        ),
+      ),
+      (places) => emit(
+        state.copyWith(
+          status: PlacesStatus.loaded,
+          operation: PlaceOperation.allPlaces,
+          places: places,
+        ),
+      ),
     );
   }
 
-  Future<void> nearbyPlaces(String location) async {
-    emit(NearbyPlacesLoading());
+  Future<void> getNearbyPlaces(String location) async {
+    emit(
+      state.copyWith(
+        status: PlacesStatus.loading,
+        operation: PlaceOperation.nearbyPlaces,
+      ),
+    );
     final result = await getPlacesByLocation(location);
     result.fold(
-      (error) => emit(NearbyPlacesError(error.toString())),
-      (places) => emit(NearbyPlacesLoaded(places: places)),
+      (error) => emit(
+        state.copyWith(
+          status: PlacesStatus.error,
+          operation: PlaceOperation.nearbyPlaces,
+          errorMessage: error.toString(),
+        ),
+      ),
+      (places) => emit(
+        state.copyWith(
+          status: PlacesStatus.loaded,
+          operation: PlaceOperation.nearbyPlaces,
+          nearbyPlaces: places,
+        ),
+      ),
     );
   }
 
-  Future<void> loadBestPlaces(String location) async {
-    emit(BestPlacesLoading());
+  Future<void> getBestPlaces(String location) async {
+    emit(
+      state.copyWith(
+        status: PlacesStatus.loading,
+        operation: PlaceOperation.bestPlaces,
+      ),
+    );
     final result = await getPlacesByLocation(location);
     result.fold(
-      (error) => emit(BestPlacesError(error.toString())),
-      (places) => emit(BestPlacesLoaded(places: places)),
+      (error) => emit(
+        state.copyWith(
+          status: PlacesStatus.error,
+          operation: PlaceOperation.bestPlaces,
+          errorMessage: error.toString(),
+        ),
+      ),
+      (places) => emit(
+        state.copyWith(
+          status: PlacesStatus.loaded,
+          operation: PlaceOperation.bestPlaces,
+          bestPlaces: places,
+        ),
+      ),
     );
   }
 
-  Future<void> search({
+  Future<void> searchPlace({
     required String location,
     required String type,
     required bool isAirConditioned,
   }) async {
-    emit(PlacesLoading());
+    emit(
+      state.copyWith(
+        status: PlacesStatus.loading,
+        operation: PlaceOperation.searchPlaces,
+      ),
+    );
     final result = await searchPlaces(
       location: location,
       type: type,
       isAirConditioned: isAirConditioned,
     );
     result.fold(
-      (error) => emit(PlacesError(error.toString())),
-      (places) => emit(PlacesLoaded(places: places)),
+      (error) => emit(
+        state.copyWith(
+          status: PlacesStatus.error,
+          operation: PlaceOperation.searchPlaces,
+          errorMessage: error.toString(),
+        ),
+      ),
+      (places) => emit(
+        state.copyWith(
+          status: PlacesStatus.loaded,
+          operation: PlaceOperation.searchPlaces,
+          places: places,
+        ),
+      ),
     );
   }
 
   Future<void> addNewPlace(Place place) async {
-    emit(AddPlaceLoading());
+    emit(
+      state.copyWith(
+        status: PlacesStatus.loading,
+        operation: PlaceOperation.addPlace,
+      ),
+    );
     final result = await addPlace(place);
     result.fold(
-      (error) => emit(AddPlaceError(error.toString())),
-      (_) => emit(AddPlaceSuccess()),
+      (error) => emit(
+        state.copyWith(
+          status: PlacesStatus.error,
+          operation: PlaceOperation.addPlace,
+          errorMessage: error.toString(),
+        ),
+      ),
+      (_) => emit(
+        state.copyWith(
+          status: PlacesStatus.success,
+          operation: PlaceOperation.addPlace,
+        ),
+      ),
     );
   }
 }
 
-abstract class PlacesState {}
+enum PlacesStatus { initial, loading, loaded, success, error }
 
-class PlacesInitial extends PlacesState {}
+enum PlaceOperation {
+  none,
+  allPlaces,
+  nearbyPlaces,
+  bestPlaces,
+  searchPlaces,
+  addPlace,
+}
 
-class PlacesLoading extends PlacesState {}
-
-class PlacesLoaded extends PlacesState {
+class PlacesState {
+  final PlacesStatus status;
+  final PlaceOperation operation;
   final List<Place> places;
-  PlacesLoaded({required this.places});
-}
+  final List<Place> nearbyPlaces;
+  final List<Place> bestPlaces;
+  final String? errorMessage;
 
-class PlacesError extends PlacesState {
-  final String message;
-  PlacesError(this.message);
-}
+  PlacesState({
+    this.status = PlacesStatus.initial,
+    this.operation = PlaceOperation.none,
+    this.places = const [],
+    this.nearbyPlaces = const [],
+    this.bestPlaces = const [],
+    this.errorMessage,
+  });
 
-class NearbyPlacesLoading extends PlacesState {}
-
-class NearbyPlacesLoaded extends PlacesState {
-  final List<Place> places;
-  NearbyPlacesLoaded({required this.places});
-}
-
-class NearbyPlacesError extends PlacesState {
-  final String message;
-  NearbyPlacesError(this.message);
-}
-
-class BestPlacesLoading extends PlacesState {}
-
-class BestPlacesLoaded extends PlacesState {
-  final List<Place> places;
-  BestPlacesLoaded({required this.places});
-}
-
-class BestPlacesError extends PlacesState {
-  final String message;
-  BestPlacesError(this.message);
-}
-
-class AddPlaceLoading extends PlacesState {}
-
-class AddPlaceSuccess extends PlacesState {}
-
-class AddPlaceError extends PlacesState {
-  final String message;
-  AddPlaceError(this.message);
+  PlacesState copyWith({
+    PlacesStatus? status,
+    PlaceOperation? operation,
+    List<Place>? places,
+    List<Place>? nearbyPlaces,
+    List<Place>? bestPlaces,
+    String? errorMessage,
+  }) {
+    return PlacesState(
+      status: status ?? this.status,
+      operation: operation ?? this.operation,
+      places: places ?? this.places,
+      nearbyPlaces: nearbyPlaces ?? this.nearbyPlaces,
+      bestPlaces: bestPlaces ?? this.bestPlaces,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
+  }
 }

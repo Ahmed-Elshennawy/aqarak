@@ -49,42 +49,7 @@ class PlaceRemoteDataSource {
     }).toList();
   }
 
-  Future<List<PlaceModel>> getAllPlaces({
-    int limit = 10,
-    DocumentSnapshot? lastDoc,
-  }) async {
-    Query query = _firestore.collection('places').limit(limit);
-
-    if (lastDoc != null) {
-      query = query.startAfterDocument(lastDoc);
-    }
-
-    final snapshot = await query.get();
-    return snapshot.docs.map((doc) {
-      final data = doc.data();
-      if (data is Map<String, dynamic>) {
-        return PlaceModel.fromJson(data);
-      } else {
-        throw Exception('Invalid document data format');
-      }
-    }).toList();
-  }
-
   Future<void> addPlace(PlaceModel place) async {
     await _firestore.collection('places').doc(place.id).set(place.toJson());
-  }
-
-  Future<DocumentSnapshot?> getLastDocumentForLocation(String location) async {
-    final snapshot = await _firestore
-        .collection('places')
-        .where('location', isEqualTo: location)
-        .limit(10)
-        .get();
-    return snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
-  }
-
-  Future<DocumentSnapshot?> getLastDocumentForAllPlaces() async {
-    final snapshot = await _firestore.collection('places').limit(10).get();
-    return snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
   }
 }

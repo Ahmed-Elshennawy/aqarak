@@ -1,7 +1,6 @@
 import 'package:aqarak/data/datasources/place_remote_datasource.dart';
 import 'package:aqarak/domain/entities/place.dart';
 import 'package:aqarak/domain/repositories/place_repository.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import '../models/place_model.dart';
 
@@ -44,22 +43,6 @@ class PlaceRepositoryImpl implements PlaceRepository {
   ) async {
     try {
       final places = await remoteDataSource.getPlacesByLocation(location);
-      return Right(places.map((model) => model.toEntity()).toList());
-    } catch (e) {
-      return Left(Exception(e.toString()));
-    }
-  }
-
-  @override
-  Future<Either<Exception, List<Place>>> getAllPlaces({
-    int limit = 10,
-    DocumentSnapshot? lastDoc,
-  }) async {
-    try {
-      final places = await remoteDataSource.getAllPlaces(
-        limit: limit,
-        lastDoc: lastDoc,
-      );
       return Right(places.map((model) => model.toEntity()).toList());
     } catch (e) {
       return Left(Exception(e.toString()));

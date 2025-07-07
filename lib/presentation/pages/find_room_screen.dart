@@ -64,6 +64,7 @@ class FindRoomScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     CustomToggles(),
+                    // ALL PLACES FROM API
                     BlocBuilder<PlacesCubit, PlacesState>(
                       builder: (context, state) {
                         if (state is PlacesLoading) {

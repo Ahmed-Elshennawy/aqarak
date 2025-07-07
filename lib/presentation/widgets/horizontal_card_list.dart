@@ -94,6 +94,23 @@ class PlaceCard extends StatelessWidget {
               width: width,
               height: 60,
               fit: BoxFit.cover,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Container(
+                  width: width,
+                  height: 60,
+                  color: Colors.grey[200],
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  width: width,
+                  height: 60,
+                  color: Colors.grey[200],
+                  child: Icon(Icons.broken_image, color: Colors.grey[400]),
+                );
+              },
             ),
           ),
           const SizedBox(height: 4),

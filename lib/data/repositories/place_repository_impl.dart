@@ -40,16 +40,10 @@ class PlaceRepositoryImpl implements PlaceRepository {
 
   @override
   Future<Either<Exception, List<Place>>> getPlacesByLocation(
-    String location, {
-    int limit = 10,
-    DocumentSnapshot? lastDoc,
-  }) async {
+    String location,
+  ) async {
     try {
-      final places = await remoteDataSource.getPlacesByLocation(
-        location,
-        limit: limit,
-        lastDoc: lastDoc,
-      );
+      final places = await remoteDataSource.getPlacesByLocation(location);
       return Right(places.map((model) => model.toEntity()).toList());
     } catch (e) {
       return Left(Exception(e.toString()));

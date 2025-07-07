@@ -12,11 +12,7 @@ abstract class PlaceRepository {
     required bool isAirConditioned,
   });
 
-  Future<Either<Exception, List<Place>>> getPlacesByLocation(
-    String location, {
-    int limit,
-    DocumentSnapshot? lastDoc,
-  });
+  Future<Either<Exception, List<Place>>> getPlacesByLocation(String location);
 
   Future<Either<Exception, List<Place>>> getAllPlaces({
     int limit,

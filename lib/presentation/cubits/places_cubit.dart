@@ -1,5 +1,4 @@
 import 'package:aqarak/domain/usecases/get_places.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/place.dart';
 import '../../domain/usecases/get_places_by_location.dart';
@@ -19,15 +18,30 @@ class PlacesCubit extends Cubit<PlacesState> {
     required this.addPlace,
   }) : super(PlacesInitial());
 
-  DocumentSnapshot? _lastNearbyDoc;
-  DocumentSnapshot? _lastBestPlacesDoc;
-
   Future<void> places() async {
     emit(PlacesLoading());
     final result = await getPlaces();
     result.fold(
       (error) => emit(PlacesError(error.toString())),
       (places) => emit(PlacesLoaded(places: places)),
+    );
+  }
+
+  Future<void> nearbyPlaces(String location) async {
+    emit(NearbyPlacesLoading());
+    final result = await getPlacesByLocation(location);
+    result.fold(
+      (error) => emit(NearbyPlacesError(error.toString())),
+      (places) => emit(NearbyPlacesLoaded(places: places)),
+    );
+  }
+
+  Future<void> loadBestPlaces(String location) async {
+    emit(BestPlacesLoading());
+    final result = await getPlacesByLocation(location);
+    result.fold(
+      (error) => emit(BestPlacesError(error.toString())),
+      (places) => emit(BestPlacesLoaded(places: places)),
     );
   }
 
@@ -46,56 +60,6 @@ class PlacesCubit extends Cubit<PlacesState> {
       (error) => emit(PlacesError(error.toString())),
       (places) => emit(PlacesLoaded(places: places)),
     );
-  }
-
-  Future<void> loadNearbyPlaces(String location) async {
-    emit(NearbyPlacesLoading());
-    final result = await getPlacesByLocation(location, lastDoc: _lastNearbyDoc);
-    result.fold((error) => emit(NearbyPlacesError(error.toString())), (places) {
-      _lastNearbyDoc = places.isNotEmpty
-          ? places.last as DocumentSnapshot?
-          : null;
-      emit(NearbyPlacesLoaded(places: places));
-    });
-  }
-
-  Future<void> loadMoreNearbyPlaces(String location) async {
-    if (_lastNearbyDoc == null) return;
-    final result = await getPlacesByLocation(location, lastDoc: _lastNearbyDoc);
-    result.fold((error) => emit(NearbyPlacesError(error.toString())), (places) {
-      _lastNearbyDoc = places.isNotEmpty
-          ? places.last as DocumentSnapshot?
-          : null;
-      emit(
-        NearbyPlacesLoaded(
-          places: (state as NearbyPlacesLoaded).places + places,
-        ),
-      );
-    });
-  }
-
-  Future<void> loadBestPlaces() async {
-    emit(BestPlacesLoading());
-    final result = await getPlacesByLocation('', lastDoc: _lastBestPlacesDoc);
-    result.fold((error) => emit(BestPlacesError(error.toString())), (places) {
-      _lastBestPlacesDoc = places.isNotEmpty
-          ? places.last as DocumentSnapshot?
-          : null;
-      emit(BestPlacesLoaded(places: places));
-    });
-  }
-
-  Future<void> loadMoreBestPlaces() async {
-    if (_lastBestPlacesDoc == null) return;
-    final result = await getPlacesByLocation('', lastDoc: _lastBestPlacesDoc);
-    result.fold((error) => emit(BestPlacesError(error.toString())), (places) {
-      _lastBestPlacesDoc = places.isNotEmpty
-          ? places.last as DocumentSnapshot?
-          : null;
-      emit(
-        BestPlacesLoaded(places: (state as BestPlacesLoaded).places + places),
-      );
-    });
   }
 
   Future<void> addNewPlace(Place place) async {

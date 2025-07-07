@@ -33,19 +33,10 @@ class PlaceRemoteDataSource {
         .toList();
   }
 
-  Future<List<PlaceModel>> getPlacesByLocation(
-    String location, {
-    int limit = 10,
-    DocumentSnapshot? lastDoc,
-  }) async {
+  Future<List<PlaceModel>> getPlacesByLocation(String location) async {
     Query query = _firestore
         .collection('places')
-        .where('location', isEqualTo: location)
-        .limit(limit);
-
-    if (lastDoc != null) {
-      query = query.startAfterDocument(lastDoc);
-    }
+        .where('location', isEqualTo: location);
 
     final snapshot = await query.get();
     return snapshot.docs.map((doc) {

@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:aqarak/data/datasources/place_remote_datasource.dart';
 import 'package:aqarak/data/repositories/place_repository_impl.dart';
 import 'package:aqarak/domain/usecases/add_place.dart';
@@ -13,12 +12,10 @@ import 'package:aqarak/presentation/widgets/custom_app_bar.dart';
 import 'package:aqarak/presentation/widgets/custom_snack_bar.dart';
 import 'package:aqarak/presentation/widgets/custom_toggles.dart';
 import 'package:aqarak/presentation/widgets/horizontal_card_list.dart';
-import 'package:aqarak/presentation/widgets/location_search_feild.dart';
 import 'package:aqarak/presentation/widgets/shimmer_place_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/constants/app_images.dart';
 import '../../core/constants/app_sizes.dart';
 
 class FindRoomScreen extends StatelessWidget {
@@ -26,8 +23,6 @@ class FindRoomScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locationSearchKey = GlobalKey<LocationSearchFieldState>();
-
     return BlocProvider(
       create: (context) {
         final cubit = PlacesCubit(
@@ -45,6 +40,8 @@ class FindRoomScreen extends StatelessWidget {
           ),
         );
         cubit.places();
+        cubit.nearbyPlaces("Alexandria, Egypt");
+        cubit.loadBestPlaces("Cairo, Egypt");
         return cubit;
       },
       child: MultiBlocProvider(
@@ -98,7 +95,10 @@ class FindRoomScreen extends StatelessWidget {
                           );
                           log('Error message ${state.message}');
                         }
-                        return const SizedBox.shrink();
+                        return HorizontalCardList(
+                          sectionTitle: 'Places',
+                          items: [],
+                        );
                       },
                     ),
                     const Divider(
@@ -107,6 +107,7 @@ class FindRoomScreen extends StatelessWidget {
                       thickness: 3,
                     ),
                     const SizedBox(height: AppSizes.padding),
+                    // THE PLACES IN YOUR LOCATION
                     BlocBuilder<PlacesCubit, PlacesState>(
                       builder: (context, state) {
                         if (state is NearbyPlacesLoading) {
@@ -131,15 +132,6 @@ class FindRoomScreen extends StatelessWidget {
                                       },
                                     )
                                     .toList(),
-                                onViewAll: () => context
-                                    .read<PlacesCubit>()
-                                    .loadMoreNearbyPlaces(
-                                      locationSearchKey
-                                              .currentState
-                                              ?.controller
-                                              .text ??
-                                          '',
-                                    ),
                               ),
                             ],
                           );
@@ -148,18 +140,7 @@ class FindRoomScreen extends StatelessWidget {
                         }
                         return HorizontalCardList(
                           sectionTitle: 'Explore Nearby',
-                          items: [
-                            {
-                              'imageUrl': AppImages.homeTest2,
-                              'title': 'Ivory Coast',
-                            },
-                            {
-                              'imageUrl': AppImages.homeTest2,
-                              'title': 'Senegal',
-                            },
-                            {'imageUrl': AppImages.homeTest2, 'title': 'Ville'},
-                            {'imageUrl': AppImages.homeTest2, 'title': 'Lagos'},
-                          ],
+                          items: [],
                         );
                       },
                     ),
@@ -179,6 +160,7 @@ class FindRoomScreen extends StatelessWidget {
                               (_) => {'imageUrl': '', 'title': ''},
                             ),
                             itemBuilder: (context, index) => ShimmerPlaceCard(),
+                            onViewAll: () => context.read<PlacesCubit>(),
                           );
                         } else if (state is BestPlacesLoaded) {
                           return Column(
@@ -193,9 +175,7 @@ class FindRoomScreen extends StatelessWidget {
                                       },
                                     )
                                     .toList(),
-                                onViewAll: () => context
-                                    .read<PlacesCubit>()
-                                    .loadMoreBestPlaces(),
+                                onViewAll: () => context.read<PlacesCubit>(),
                               ),
                             ],
                           );
@@ -204,21 +184,7 @@ class FindRoomScreen extends StatelessWidget {
                         }
                         return HorizontalCardList(
                           sectionTitle: 'Best Places',
-                          items: [
-                            {
-                              'imageUrl': AppImages.homeTest2,
-                              'title': 'Heden golf',
-                            },
-                            {'imageUrl': AppImages.homeTest2, 'title': 'Onomo'},
-                            {
-                              'imageUrl': AppImages.homeTest2,
-                              'title': 'Adagio',
-                            },
-                            {
-                              'imageUrl': AppImages.homeTest2,
-                              'title': 'Sofiltel',
-                            },
-                          ],
+                          items: [],
                         );
                       },
                     ),

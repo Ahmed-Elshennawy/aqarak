@@ -11,6 +11,16 @@ class PlaceRepositoryImpl implements PlaceRepository {
   PlaceRepositoryImpl({required this.remoteDataSource});
 
   @override
+  Future<Either<Exception, List<Place>>> getPlaces() async {
+    try {
+      final places = await remoteDataSource.getPlaces();
+      return Right(places.map((model) => model.toEntity()).toList());
+    } catch (e) {
+      return Left(Exception(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Exception, List<Place>>> searchPlaces({
     required String location,
     required String type,

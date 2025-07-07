@@ -1,9 +1,10 @@
 import 'package:aqarak/data/datasources/place_remote_datasource.dart';
 import 'package:aqarak/data/repositories/place_repository_impl.dart';
 import 'package:aqarak/domain/usecases/add_place.dart';
+import 'package:aqarak/domain/usecases/get_places.dart';
 import 'package:aqarak/domain/usecases/get_places_by_location.dart';
 import 'package:aqarak/domain/usecases/search_places.dart';
-import 'package:aqarak/presentation/cubits/search_places_cubit.dart';
+import 'package:aqarak/presentation/cubits/places_cubit.dart';
 import 'package:aqarak/presentation/widgets/custom_main_button.dart';
 import 'package:aqarak/presentation/widgets/location_search_feild.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -48,7 +49,10 @@ class AddPlaceScreenState extends State<AddPlaceScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SearchPlacesCubit(
+      create: (context) => PlacesCubit(
+        getPlaces: GetPlaces(
+          PlaceRepositoryImpl(remoteDataSource: PlaceRemoteDataSource()),
+        ),
         searchPlaces: SearchPlaces(
           PlaceRepositoryImpl(remoteDataSource: PlaceRemoteDataSource()),
         ),
@@ -92,12 +96,6 @@ class AddPlaceScreenState extends State<AddPlaceScreen> {
                       _locationController.text = p0;
                     },
                   ),
-                  // TextFormField(
-                  //   controller: _locationController,
-                  //   decoration: const InputDecoration(labelText: 'Location'),
-                  //   validator: (value) =>
-                  //       value!.isEmpty ? 'Please enter a location' : null,
-                  // ),
                   SizedBox(height: AppSizes.padding),
                   // THE PLACE TYPE (HOTEL or VILLA)
                   DropdownButtonFormField<String>(
@@ -121,7 +119,7 @@ class AddPlaceScreenState extends State<AddPlaceScreen> {
                   ),
                   const SizedBox(height: 290),
                   // THE ADD PLACE BUTTON
-                  BlocConsumer<SearchPlacesCubit, SearchPlacesState>(
+                  BlocConsumer<PlacesCubit, PlacesState>(
                     listener: (context, state) {
                       if (state is AddPlaceSuccess) {
                         Navigator.pop(context);
@@ -140,7 +138,7 @@ class AddPlaceScreenState extends State<AddPlaceScreen> {
                       return CustomButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            context.read<SearchPlacesCubit>().addNewPlace(
+                            context.read<PlacesCubit>().addNewPlace(
                               Place(
                                 userId: FirebaseAuth.instance.currentUser!.uid,
                                 id: const Uuid().v4(),

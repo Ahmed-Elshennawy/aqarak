@@ -1,12 +1,16 @@
+import 'dart:developer';
+
 import 'package:aqarak/data/datasources/place_remote_datasource.dart';
 import 'package:aqarak/data/repositories/place_repository_impl.dart';
 import 'package:aqarak/domain/usecases/add_place.dart';
+import 'package:aqarak/domain/usecases/get_places.dart';
 import 'package:aqarak/domain/usecases/get_places_by_location.dart';
 import 'package:aqarak/domain/usecases/search_places.dart';
 import 'package:aqarak/presentation/cubits/find_room/property_type_cubit.dart';
-import 'package:aqarak/presentation/cubits/search_places_cubit.dart';
-import 'package:aqarak/presentation/pages/add_place_screen_test.dart';
+import 'package:aqarak/presentation/cubits/places_cubit.dart';
+import 'package:aqarak/presentation/pages/add_place_screen.dart';
 import 'package:aqarak/presentation/widgets/custom_app_bar.dart';
+import 'package:aqarak/presentation/widgets/custom_snack_bar.dart';
 import 'package:aqarak/presentation/widgets/custom_toggles.dart';
 import 'package:aqarak/presentation/widgets/horizontal_card_list.dart';
 import 'package:aqarak/presentation/widgets/location_search_feild.dart';
@@ -24,17 +28,24 @@ class FindRoomScreen extends StatelessWidget {
     final locationSearchKey = GlobalKey<LocationSearchFieldState>();
 
     return BlocProvider(
-      create: (context) => SearchPlacesCubit(
-        searchPlaces: SearchPlaces(
-          PlaceRepositoryImpl(remoteDataSource: PlaceRemoteDataSource()),
-        ),
-        getPlacesByLocation: GetPlacesByLocation(
-          PlaceRepositoryImpl(remoteDataSource: PlaceRemoteDataSource()),
-        ),
-        addPlace: AddPlace(
-          PlaceRepositoryImpl(remoteDataSource: PlaceRemoteDataSource()),
-        ),
-      ),
+      create: (context) {
+        final cubit = PlacesCubit(
+          getPlaces: GetPlaces(
+            PlaceRepositoryImpl(remoteDataSource: PlaceRemoteDataSource()),
+          ),
+          searchPlaces: SearchPlaces(
+            PlaceRepositoryImpl(remoteDataSource: PlaceRemoteDataSource()),
+          ),
+          getPlacesByLocation: GetPlacesByLocation(
+            PlaceRepositoryImpl(remoteDataSource: PlaceRemoteDataSource()),
+          ),
+          addPlace: AddPlace(
+            PlaceRepositoryImpl(remoteDataSource: PlaceRemoteDataSource()),
+          ),
+        );
+        cubit.places();
+        return cubit;
+      },
       child: MultiBlocProvider(
         providers: [BlocProvider(create: (context) => PropertyTypeCubit())],
         child: Scaffold(
@@ -53,8 +64,39 @@ class FindRoomScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     CustomToggles(),
+                    BlocBuilder<PlacesCubit, PlacesState>(
+                      builder: (context, state) {
+                        if (state is PlacesLoading) {
+                          return const CircularProgressIndicator();
+                        } else if (state is PlacesLoaded) {
+                          return HorizontalCardList(
+                            sectionTitle: 'Places',
+                            items: state.places
+                                .map(
+                                  (place) => {
+                                    'imageUrl': place.imageUrl,
+                                    'title': place.name,
+                                  },
+                                )
+                                .toList(),
+                          );
+                        } else if (state is PlacesError) {
+                          CustomSnackBar.show(
+                            context,
+                            'Can\'t Find Places, please try again.',
+                          );
+                          log('Error message ${state.message}');
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
+                    const Divider(
+                      color: AppColors.findRoomDividerColor,
+                      height: 2,
+                      thickness: 3,
+                    ),
                     const SizedBox(height: AppSizes.padding),
-                    BlocBuilder<SearchPlacesCubit, SearchPlacesState>(
+                    BlocBuilder<PlacesCubit, PlacesState>(
                       builder: (context, state) {
                         if (state is NearbyPlacesLoading) {
                           return const CircularProgressIndicator();
@@ -72,7 +114,7 @@ class FindRoomScreen extends StatelessWidget {
                                     )
                                     .toList(),
                                 onViewAll: () => context
-                                    .read<SearchPlacesCubit>()
+                                    .read<PlacesCubit>()
                                     .loadMoreNearbyPlaces(
                                       locationSearchKey
                                               .currentState
@@ -108,7 +150,8 @@ class FindRoomScreen extends StatelessWidget {
                       height: 2,
                       thickness: 3,
                     ),
-                    BlocBuilder<SearchPlacesCubit, SearchPlacesState>(
+                    const SizedBox(height: AppSizes.padding),
+                    BlocBuilder<PlacesCubit, PlacesState>(
                       builder: (context, state) {
                         if (state is BestPlacesLoading) {
                           return const CircularProgressIndicator();
@@ -126,7 +169,7 @@ class FindRoomScreen extends StatelessWidget {
                                     )
                                     .toList(),
                                 onViewAll: () => context
-                                    .read<SearchPlacesCubit>()
+                                    .read<PlacesCubit>()
                                     .loadMoreBestPlaces(),
                               ),
                             ],

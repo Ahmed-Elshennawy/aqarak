@@ -1,3 +1,4 @@
+import 'package:aqarak/domain/usecases/get_places.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/place.dart';
@@ -5,34 +6,45 @@ import '../../domain/usecases/get_places_by_location.dart';
 import '../../domain/usecases/search_places.dart';
 import '../../domain/usecases/add_place.dart';
 
-class SearchPlacesCubit extends Cubit<SearchPlacesState> {
+class PlacesCubit extends Cubit<PlacesState> {
+  final GetPlaces getPlaces;
   final SearchPlaces searchPlaces;
   final GetPlacesByLocation getPlacesByLocation;
   final AddPlace addPlace;
 
-  SearchPlacesCubit({
+  PlacesCubit({
+    required this.getPlaces,
     required this.searchPlaces,
     required this.getPlacesByLocation,
     required this.addPlace,
-  }) : super(SearchPlacesInitial());
+  }) : super(PlacesInitial());
 
   DocumentSnapshot? _lastNearbyDoc;
   DocumentSnapshot? _lastBestPlacesDoc;
+
+  Future<void> places() async {
+    emit(PlacesLoading());
+    final result = await getPlaces();
+    result.fold(
+      (error) => emit(PlacesError(error.toString())),
+      (places) => emit(PlacesLoaded(places: places)),
+    );
+  }
 
   Future<void> search({
     required String location,
     required String type,
     required bool isAirConditioned,
   }) async {
-    emit(SearchPlacesLoading());
+    emit(PlacesLoading());
     final result = await searchPlaces(
       location: location,
       type: type,
       isAirConditioned: isAirConditioned,
     );
     result.fold(
-      (error) => emit(SearchPlacesError(error.toString())),
-      (places) => emit(SearchPlacesLoaded(places: places)),
+      (error) => emit(PlacesError(error.toString())),
+      (places) => emit(PlacesLoaded(places: places)),
     );
   }
 
@@ -96,51 +108,51 @@ class SearchPlacesCubit extends Cubit<SearchPlacesState> {
   }
 }
 
-abstract class SearchPlacesState {}
+abstract class PlacesState {}
 
-class SearchPlacesInitial extends SearchPlacesState {}
+class PlacesInitial extends PlacesState {}
 
-class SearchPlacesLoading extends SearchPlacesState {}
+class PlacesLoading extends PlacesState {}
 
-class SearchPlacesLoaded extends SearchPlacesState {
+class PlacesLoaded extends PlacesState {
   final List<Place> places;
-  SearchPlacesLoaded({required this.places});
+  PlacesLoaded({required this.places});
 }
 
-class SearchPlacesError extends SearchPlacesState {
+class PlacesError extends PlacesState {
   final String message;
-  SearchPlacesError(this.message);
+  PlacesError(this.message);
 }
 
-class NearbyPlacesLoading extends SearchPlacesState {}
+class NearbyPlacesLoading extends PlacesState {}
 
-class NearbyPlacesLoaded extends SearchPlacesState {
+class NearbyPlacesLoaded extends PlacesState {
   final List<Place> places;
   NearbyPlacesLoaded({required this.places});
 }
 
-class NearbyPlacesError extends SearchPlacesState {
+class NearbyPlacesError extends PlacesState {
   final String message;
   NearbyPlacesError(this.message);
 }
 
-class BestPlacesLoading extends SearchPlacesState {}
+class BestPlacesLoading extends PlacesState {}
 
-class BestPlacesLoaded extends SearchPlacesState {
+class BestPlacesLoaded extends PlacesState {
   final List<Place> places;
   BestPlacesLoaded({required this.places});
 }
 
-class BestPlacesError extends SearchPlacesState {
+class BestPlacesError extends PlacesState {
   final String message;
   BestPlacesError(this.message);
 }
 
-class AddPlaceLoading extends SearchPlacesState {}
+class AddPlaceLoading extends PlacesState {}
 
-class AddPlaceSuccess extends SearchPlacesState {}
+class AddPlaceSuccess extends PlacesState {}
 
-class AddPlaceError extends SearchPlacesState {
+class AddPlaceError extends PlacesState {
   final String message;
   AddPlaceError(this.message);
 }

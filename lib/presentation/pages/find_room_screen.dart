@@ -14,6 +14,7 @@ import 'package:aqarak/presentation/widgets/custom_snack_bar.dart';
 import 'package:aqarak/presentation/widgets/custom_toggles.dart';
 import 'package:aqarak/presentation/widgets/horizontal_card_list.dart';
 import 'package:aqarak/presentation/widgets/location_search_feild.dart';
+import 'package:aqarak/presentation/widgets/shimmer_place_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/constants/app_colors.dart';
@@ -63,12 +64,21 @@ class FindRoomScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
+                    // HOTELS OR VILLAS BUTTONS
                     CustomToggles(),
+                    const SizedBox(height: AppSizes.padding),
                     // ALL PLACES FROM API
                     BlocBuilder<PlacesCubit, PlacesState>(
                       builder: (context, state) {
                         if (state is PlacesLoading) {
-                          return const CircularProgressIndicator();
+                          return HorizontalCardList(
+                            sectionTitle: 'Places',
+                            items: List.generate(
+                              4,
+                              (_) => {'imageUrl': '', 'title': ''},
+                            ),
+                            itemBuilder: (context, index) => ShimmerPlaceCard(),
+                          );
                         } else if (state is PlacesLoaded) {
                           return HorizontalCardList(
                             sectionTitle: 'Places',
@@ -100,7 +110,14 @@ class FindRoomScreen extends StatelessWidget {
                     BlocBuilder<PlacesCubit, PlacesState>(
                       builder: (context, state) {
                         if (state is NearbyPlacesLoading) {
-                          return const CircularProgressIndicator();
+                          return HorizontalCardList(
+                            sectionTitle: 'Explore Nearby',
+                            items: List.generate(
+                              4,
+                              (_) => {'imageUrl': '', 'title': ''},
+                            ),
+                            itemBuilder: (context, index) => ShimmerPlaceCard(),
+                          );
                         } else if (state is NearbyPlacesLoaded) {
                           return Column(
                             children: [
@@ -155,7 +172,14 @@ class FindRoomScreen extends StatelessWidget {
                     BlocBuilder<PlacesCubit, PlacesState>(
                       builder: (context, state) {
                         if (state is BestPlacesLoading) {
-                          return const CircularProgressIndicator();
+                          return HorizontalCardList(
+                            sectionTitle: 'Best Places',
+                            items: List.generate(
+                              4,
+                              (_) => {'imageUrl': '', 'title': ''},
+                            ),
+                            itemBuilder: (context, index) => ShimmerPlaceCard(),
+                          );
                         } else if (state is BestPlacesLoaded) {
                           return Column(
                             children: [

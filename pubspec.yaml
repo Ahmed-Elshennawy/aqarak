@@ -58,6 +58,7 @@ dependencies:
   firebase_messaging: ^15.2.8
   firebase_app_check: ^0.3.2+8
   flutter_facebook_auth: ^7.1.2
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1

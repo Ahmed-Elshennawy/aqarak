@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HorizontalCardList extends StatelessWidget {
   final String sectionTitle;
   final List<Map<String, String>> items;
   final VoidCallback? onViewAll;
+  final Widget Function(BuildContext, int)? itemBuilder;
 
   const HorizontalCardList({
     super.key,
     required this.sectionTitle,
     required this.items,
     this.onViewAll,
+    this.itemBuilder,
   });
 
   @override
@@ -26,6 +29,9 @@ class HorizontalCardList extends StatelessWidget {
             itemCount: items.length,
             separatorBuilder: (context, index) => const SizedBox(width: 12),
             itemBuilder: (context, index) {
+              if (itemBuilder != null) {
+                return itemBuilder!(context, index);
+              }
               final item = items[index];
               return PlaceCard(
                 imageUrl: item['imageUrl']!,
@@ -96,11 +102,17 @@ class PlaceCard extends StatelessWidget {
               fit: BoxFit.cover,
               loadingBuilder: (context, child, loadingProgress) {
                 if (loadingProgress == null) return child;
-                return Container(
-                  width: width,
-                  height: 60,
-                  color: Colors.grey[200],
-                  child: Center(child: CircularProgressIndicator()),
+                return Shimmer.fromColors(
+                  baseColor: Colors.grey[500]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(
+                    width: width,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                 );
               },
               errorBuilder: (context, error, stackTrace) {

@@ -128,7 +128,7 @@ class FindRoomScreen extends StatelessWidget {
                         if (state.nearbyPlaces.isNotEmpty) {
                           return HorizontalCardList(
                             sectionTitle: 'Explore Nearby',
-                            items: state.places
+                            items: state.nearbyPlaces
                                 .map(
                                   (place) => {
                                     'imageUrl': place.imageUrl,
@@ -185,7 +185,7 @@ class FindRoomScreen extends StatelessWidget {
                         if (state.bestPlaces.isNotEmpty) {
                           return HorizontalCardList(
                             sectionTitle: 'Best Places',
-                            items: state.places
+                            items: state.bestPlaces
                                 .map(
                                   (place) => {
                                     'imageUrl': place.imageUrl,
